@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Subtheme__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Relation to common code for the subtheme the journal entry was given.</description>
+    <externalId>false</externalId>
+    <label>Subtheme</label>
+    <lookupFilter>
+        <active>true</active>
+        <filterItems>
+            <field>Common_Code__c.CRM_Code_Set__c</field>
+            <operation>equals</operation>
+            <value>Behandlingstema</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Common_Code__c</referenceTo>
+    <relationshipLabel>Journal Entries (Subtheme)</relationshipLabel>
+    <relationshipName>Journal_Entries_Subtheme</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>
