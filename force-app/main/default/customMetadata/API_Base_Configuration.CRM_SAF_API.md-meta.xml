@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>SAK_API</label>
+    <label>SAF API</label>
     <protected>false</protected>
     <values>
         <field>Base_Endpoint_Test__c</field>

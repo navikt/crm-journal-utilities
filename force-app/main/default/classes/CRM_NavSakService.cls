@@ -34,7 +34,7 @@ public class CRM_NavSakService {
         //BUILD GRAPH QUERY
         String graphBody = generateGraphBody(actorId);
 
-        apiCtrl.initRequest('SAF_API', 'POST_SAF_CASE_QUERY');
+        apiCtrl.initRequest('CRM_SAF_API', 'POST_SAF_CASE_QUERY');
         apiCtrl.addServiceAuthHeader('Saf');
         apiCtrl.addHeader('Content-Type', 'application/json');
         apiCtrl.setBody(graphBody);
