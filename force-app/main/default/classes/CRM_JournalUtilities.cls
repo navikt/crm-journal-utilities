@@ -32,24 +32,16 @@ public class CRM_JournalUtilities {
      * @return UtilityResponse
      **/
     public static UtilityResponse postJournal(CRM_JournalEntryWrapper journalRequest, Id referenceId) {
-        ApiController apiCtrl = new ApiController();
+        CRM_JournalService service = new CRM_JournalService();
         UtilityResponse resp = new UtilityResponse();
 
-        Map<String, String> httpHeaders = new Map<String, String>{ 'Content-Type' => 'application/json' };
+        Boolean complete = journalRequest.tema != 'BID' ? true : false; //Do not automatically complete BID journals as they will not be published to kafka
+        HttpResponse httpResp = service.postJournal(journalRequest, complete);
+        Integer statusCode = httpResp.getStatusCode();
 
-        apiCtrl.initRequest('Journal_API', 'POST_CREATE_JOURNAL');
-        apiCtrl.addServiceAuthHeader('Dokarkiv');
-        apiCtrl.addUrlParam('forsoekFerdigstill', 'true');
-        apiCtrl.setBody(JSON.serialize(journalRequest, true));
-        apiCtrl.setHeaders(httpHeaders);
-
-        apiCtrl.doCallout();
-        Integer statusCode = apiCtrl.getResponse().getStatusCode();
         if (statusCode == 200 || statusCode == 201) {
             resp.success = true;
-            Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(
-                apiCtrl.getResponse().getBody()
-            );
+            Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(httpResp.getBody());
             resp.journalpostId = (String) responseMap.get('journalpostId');
             Boolean journalCompleted = (Boolean) responseMap.get('journalpostferdigstilt');
             resp.journalPostStatus = journalCompleted ? 'Completed' : 'In Progress';
@@ -60,16 +52,8 @@ public class CRM_JournalUtilities {
             SObject objectRef = String.isNotBlank(referenceId)
                 ? referenceId.getSobjectType().newSObject(referenceId)
                 : null;
-            logger.error(
-                'Error posting journal entry \n ' +
-                'Status: ' +
-                apiCtrl.getResponse().getStatus() +
-                '\n' +
-                'Body: ' +
-                apiCtrl.getResponse().getBody(),
-                objectRef,
-                CRM_ApplicationDomain.Domain.NKS
-            );
+
+            logger.httpError('Error posting journal entry', httpResp, objectRef, CRM_ApplicationDomain.Domain.NKS);
             String errorRef = logger.peek().UUID__c; //Unique error reference for troubleshooting
             logger.publish();
             resp.errorMessage = errorRef;
