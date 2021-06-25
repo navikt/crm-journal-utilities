@@ -73,7 +73,7 @@ public class CRM_NavSakService {
     }
 
     public static String generateGraphBody(String actorId) {
-        CRM_SafBrukerIdInput brukerId = new CRM_SafBrukerIdInput();
+        SafBrukerIdInput brukerId = new SafBrukerIdInput();
         brukerId.id = actorId;
         brukerId.type = 'AKTOERID';
 
@@ -103,6 +103,13 @@ public class CRM_NavSakService {
                 addThemeFriendlyName(navCases[i]);
             }
         }
+    }
+
+    private class SafBrukerIdInput {
+        @AuraEnabled
+        public String id;
+        @AuraEnabled
+        public String type; //-> Enum
     }
 
     public class SafApiResponse {

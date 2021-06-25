@@ -1,5 +1,5 @@
 import { LightningElement, track, api, wire } from 'lwc';
-import nksSingleValueUpdate from '@salesforce/messageChannel/nksSingleValueUpdate__c';
+import crmSingleValueUpdate from '@salesforce/messageChannel/crmSingleValueUpdate__c';
 import getCategorization from '@salesforce/apex/CRM_ThemeUtils.getCategorization';
 
 import { publish, MessageContext } from 'lightning/messageService';
@@ -218,7 +218,7 @@ export default class NksThemeCategorization extends LightningElement {
 
     publishFieldChange(field, value) {
         const payload = { name: field, value: value };
-        publish(this.messageContext, nksSingleValueUpdate, payload);
+        publish(this.messageContext, crmSingleValueUpdate, payload);
     }
 
     //Validation preventing user moving to next screen in flow if state is not valid

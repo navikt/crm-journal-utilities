@@ -493,7 +493,7 @@
         </connector>
         <fields>
             <name>Journal_Case_Overview</name>
-            <extensionName>c:nksPersonCaseOverview</extensionName>
+            <extensionName>c:crmPersonCaseOverview</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>actorId</name>

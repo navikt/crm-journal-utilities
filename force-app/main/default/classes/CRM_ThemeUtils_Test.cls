@@ -2,7 +2,7 @@
 public class CRM_ThemeUtils_Test {
     @TestSetup
     static void makeData() {
-        Common_Code__c themeGroup = (Common_Code__c) UTIL_TestDataFactory.createRecord(
+        Common_Code__c themeGroup = (Common_Code__c) JOURNAL_TestDataFactory.createRecord(
             new Common_Code__c(Name = 'Arbeid', CRM_Code_Set__c = 'Temagrupper', CRM_Code__c = 'ARBD')
         );
         List<Common_Code__c> themes = new List<Common_Code__c>{
@@ -21,7 +21,7 @@ public class CRM_ThemeUtils_Test {
                 CRM_Parent_Code__c = themeGroup.Id
             )
         );
-        themes = (List<Common_Code__c>) UTIL_TestDataFactory.createRecordList(themes);
+        themes = (List<Common_Code__c>) JOURNAL_TestDataFactory.createRecordList(themes);
 
         List<Common_Code__c> subthemes = new List<Common_Code__c>{
             new Common_Code__c(
@@ -39,7 +39,7 @@ public class CRM_ThemeUtils_Test {
                 CRM_Parent_Code__c = themes[0].Id
             )
         );
-        UTIL_TestDataFactory.createRecordList(subthemes);
+        JOURNAL_TestDataFactory.createRecordList(subthemes);
     }
 
     @isTest

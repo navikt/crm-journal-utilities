@@ -1,7 +1,7 @@
 import { LightningElement, api, wire } from 'lwc';
 import getCases from '@salesforce/apex/CRM_NavSakService.getSafActorCases';
 import getCategorization from '@salesforce/apex/CRM_ThemeUtils.getCategorization';
-import nksSingleValueUpdate from '@salesforce/messageChannel/nksSingleValueUpdate__c';
+import crmSingleValueUpdate from '@salesforce/messageChannel/crmSingleValueUpdate__c';
 
 import { publish, MessageContext } from 'lightning/messageService';
 
@@ -171,7 +171,7 @@ export default class NksPersonCaseOverview extends LightningElement {
     //Publish to nksWorkAllocation component to trigger search in flow context
     publishFieldChange(field, value) {
         const payload = { name: field, value: value };
-        publish(this.messageContext, nksSingleValueUpdate, payload);
+        publish(this.messageContext, crmSingleValueUpdate, payload);
     }
 
     @api
