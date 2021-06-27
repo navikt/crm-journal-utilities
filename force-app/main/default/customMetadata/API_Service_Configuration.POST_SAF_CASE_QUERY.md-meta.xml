@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>API_Base_Configuration__c</field>
-        <value xsi:type="xsd:string">CRM_SAF_API</value>
+        <value xsi:type="xsd:string">SAF_API</value>
     </values>
     <values>
         <field>HTTP_Method__c</field>
