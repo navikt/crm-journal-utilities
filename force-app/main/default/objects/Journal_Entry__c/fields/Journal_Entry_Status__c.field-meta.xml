@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Journal_Entry_Status__c</fullName>
     <description>Status of the journal entry submission to JOARK</description>
@@ -20,6 +20,11 @@
                 <fullName>Completed</fullName>
                 <default>false</default>
                 <label>Completed</label>
+            </value>
+            <value>
+                <fullName>Failed</fullName>
+                <default>false</default>
+                <label>Failed</label>
             </value>
         </valueSetDefinition>
     </valueSet>
