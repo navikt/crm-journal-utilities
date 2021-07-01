@@ -10,7 +10,12 @@ public class CRM_JournalUtilities {
 
         switch on (request[0].requestType) {
             when 'GENERATE_DOCUMENT' {
-                returnList.add(generateDocument(request[0].documentString));
+                if (String.isNotBlank(request[0].documentString)) {
+                    returnList.add(generateDocument(request[0].documentString));
+                } else {
+                    //VF generation
+                    returnList.add(generateDocumentVf(request[0].visualForceReference));
+                }
             }
             when 'BASE_64_ENCODE' {
                 String document = EncodingUtil.base64Encode(Blob.valueOf(request[0].documentString));
@@ -74,10 +79,25 @@ public class CRM_JournalUtilities {
         return new UtilityResponse(true, document, null, null, null);
     }
 
+    /**
+     * @description: Base 64 encode an input string, used for generating valid document for journal API
+     * @author Stian Ruud Schikora | 09-17-2020
+     * @param stringToEncode [STRING]
+     * @return String
+     **/
+    public static UtilityResponse generateDocumentVf(String vfReference) {
+        Pagereference pageRef = new PageReference(vfReference);
+        //Test methods do not support getContent calls
+        String document = Test.isRunningTest() ? 'TESTING' : EncodingUtil.base64Encode(pageRef.getContentAsPdf());
+
+        return new UtilityResponse(true, document, null, null, null);
+    }
+
     public class utilityRequest {
         public utilityRequest() {
             this.requestType = null;
             this.documentString = null;
+            this.visualForceReference = null;
             this.journalRequest = null;
         }
 
@@ -93,8 +113,15 @@ public class CRM_JournalUtilities {
         )
         public String requestType;
 
-        @invocableVariable
+        @invocableVariable(
+            label='(GENERATE_DOCUMENT/BASE_64_ENCODE) Input if document is to be generate based on a string input and converted using blob.toPfd()'
+        )
         public String documentString;
+
+        @invocableVariable(
+            label='(GENERATE_DOCUMENT) Input if document is to be generated using a visualforce template. /apex/{vfName} + i.e. ?recordId=RECORID_ID to pass url params'
+        )
+        public String visualForceReference;
 
         @invocableVariable(label='Reference to salesforce record to be stored on journal entry')
         public Id referenceId;
