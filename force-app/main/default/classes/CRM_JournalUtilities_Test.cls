@@ -24,6 +24,22 @@ public class CRM_JournalUtilities_Test {
     }
 
     @isTest
+    static void testDocumentGenerationVf() {
+        CRM_JournalUtilities.utilityRequest utilRequest = new CRM_JournalUtilities.utilityRequest();
+        utilRequest.requestType = 'GENERATE_DOCUMENT';
+        utilRequest.visualForceReference = '/apex/testing';
+
+        Test.startTest();
+        String encodedString = CRM_JournalUtilities.handleRequest(
+                new List<CRM_JournalUtilities.utilityRequest>{ utilRequest }
+            )[0]
+            .documentString;
+        Test.stopTest();
+
+        System.assert(String.isNotBlank(encodedString));
+    }
+
+    @isTest
     static void testPostJournal() {
         CRM_JournalEntryWrapper journalRequest = new CRM_JournalEntryWrapper();
 
