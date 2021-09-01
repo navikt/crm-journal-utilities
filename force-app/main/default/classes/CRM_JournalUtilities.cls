@@ -22,7 +22,7 @@ public class CRM_JournalUtilities {
                 returnList.add(new UtilityResponse(true, document, null, null, null));
             }
             when 'POST_JOURNAL' {
-                returnList.add(postJournal(request[0].journalRequest, request[0].referenceId));
+                returnList.add(postJournal(request[0].journalRequest, request[0].referenceId, request[0].navIdent));
             }
         }
 
@@ -36,12 +36,12 @@ public class CRM_JournalUtilities {
      * @param journalRequest
      * @return UtilityResponse
      **/
-    public static UtilityResponse postJournal(CRM_JournalEntryWrapper journalRequest, Id referenceId) {
+    public static UtilityResponse postJournal(CRM_JournalEntryWrapper journalRequest, Id referenceId, String navIdent) {
         CRM_JournalService service = new CRM_JournalService();
         UtilityResponse resp = new UtilityResponse();
 
         Boolean complete = journalRequest.tema != 'BID' ? true : false; //Do not automatically complete BID journals as they will not be published to kafka
-        HttpResponse httpResp = service.postJournal(journalRequest, complete);
+        HttpResponse httpResp = service.postJournal(journalRequest, complete, navIdent);
         Integer statusCode = httpResp.getStatusCode();
 
         if (statusCode == 200 || statusCode == 201) {
@@ -125,6 +125,9 @@ public class CRM_JournalUtilities {
 
         @invocableVariable(label='Reference to salesforce record to be stored on journal entry')
         public Id referenceId;
+
+        @invocableVariable(label='NAV ident of the user posting the journal entry')
+        public String navIdent;
 
         @invocableVariable
         public CRM_JournalEntryWrapper journalRequest;
