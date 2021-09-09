@@ -13,7 +13,7 @@ public class CRM_ThemeUtils {
             WHERE CRM_Code_set__c = 'Temagrupper' AND CRM_Active__c = TRUE
             ORDER BY Name
         ];
-        List<Common_Code__c> themesAndSubthemes = [
+        List<Common_Code__c> themeWithGjelder = [
             SELECT
                 Id,
                 Name,
@@ -21,9 +21,18 @@ public class CRM_ThemeUtils {
                 CRM_Code_Set__c,
                 CRM_Parent_Code__r.CRM_Code__c,
                 (
-                    SELECT Id, Name, CRM_Code__c, CRM_Code_Set__c, CRM_Parent_Code__r.CRM_Code__c
+                    SELECT
+                        Id,
+                        Name,
+                        CRM_Code__c,
+                        CRM_Code_Set__c,
+                        CRM_Parent_Code__r.CRM_Code__c,
+                        CRM_Subtheme__c,
+                        CRM_Subtheme_Code__c,
+                        CRM_Subtype__c,
+                        CRM_Subtype_Code__c
                     FROM Child_Codes__r
-                    WHERE CRM_Code_Set__c = 'Behandlingstema' AND CRM_Active__c = TRUE
+                    WHERE CRM_Code_Set__c = 'Gjelder' AND CRM_Active__c = TRUE
                     ORDER BY Name
                 )
             FROM Common_Code__c
@@ -32,9 +41,9 @@ public class CRM_ThemeUtils {
         ];
 
         Map<String, List<Common_Code__c>> themeMap = new Map<String, List<Common_Code__c>>();
-        Map<String, List<Common_Code__c>> subthemeMap = new Map<String, List<Common_Code__c>>();
+        Map<String, List<Common_Code__c>> gjelderMap = new Map<String, List<Common_Code__c>>();
 
-        for (Common_Code__c theme : themesAndSubthemes) {
+        for (Common_Code__c theme : themeWithGjelder) {
             if (themeMap.containsKey(theme.CRM_Parent_Code__r.Id)) {
                 List<Common_Code__c> mapThemes = themeMap.get(theme.CRM_Parent_Code__r.Id);
                 mapThemes.add(theme);
@@ -43,18 +52,18 @@ public class CRM_ThemeUtils {
                 themeMap.put(theme.CRM_Parent_Code__r.Id, new List<Common_Code__c>{ theme });
             }
 
-            for (Common_Code__c subtheme : theme.Child_Codes__r) {
-                if (subthemeMap.containsKey(subtheme.CRM_Parent_Code__r.Id)) {
-                    List<Common_Code__c> mapSubthemes = subthemeMap.get(subtheme.CRM_Parent_Code__r.Id);
-                    mapSubthemes.add(subtheme);
-                    subthemeMap.put(subtheme.CRM_Parent_Code__r.Id, mapSubthemes);
+            for (Common_Code__c gjelder : theme.Child_Codes__r) {
+                if (gjelderMap.containsKey(gjelder.CRM_Parent_Code__r.Id)) {
+                    List<Common_Code__c> tempGjelderMap = gjelderMap.get(gjelder.CRM_Parent_Code__r.Id);
+                    tempGjelderMap.add(gjelder);
+                    gjelderMap.put(gjelder.CRM_Parent_Code__r.Id, tempGjelderMap);
                 } else {
-                    subthemeMap.put(subtheme.CRM_Parent_Code__r.Id, new List<Common_Code__c>{ subtheme });
+                    gjelderMap.put(gjelder.CRM_Parent_Code__r.Id, new List<Common_Code__c>{ gjelder });
                 }
             }
         }
 
-        return new Categories(themeGroups, themeMap, subthemeMap);
+        return new Categories(themeGroups, themeMap, gjelderMap);
     }
 
     @testVisible
@@ -64,16 +73,16 @@ public class CRM_ThemeUtils {
         @AuraEnabled
         public Map<String, List<Common_Code__c>> themeMap; //Mapping a theme group Id to list of themes
         @AuraEnabled
-        public Map<String, List<Common_Code__c>> subthemeMap; //Mapping a theme Id to a list of subthemes
+        public Map<String, List<Common_Code__c>> gjelderMap; //Mapping a theme Id to a list of gjelder values, which includes subtheme and/or subtype
 
         public Categories(
             List<Common_Code__c> themeGroups,
             Map<String, List<Common_Code__c>> themeMap,
-            Map<String, List<Common_Code__c>> subthemeMap
+            Map<String, List<Common_Code__c>> gjelderMap
         ) {
             this.themeGroups = themeGroups;
             this.themeMap = themeMap;
-            this.subthemeMap = subthemeMap;
+            this.gjelderMap = gjelderMap;
         }
     }
 }
