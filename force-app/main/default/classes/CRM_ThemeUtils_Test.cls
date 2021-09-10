@@ -7,9 +7,9 @@ public class CRM_ThemeUtils_Test {
         );
         List<Common_Code__c> themes = new List<Common_Code__c>{
             new Common_Code__c(
-                Name = 'AAP',
+                Name = 'Arbeidavklaringspenger',
                 CRM_Code_Set__c = 'Tema',
-                CRM_Code__c = 'ab00001',
+                CRM_Code__c = 'AAP',
                 CRM_Archive_Theme__c = true,
                 CRM_Parent_Code__c = themeGroup.Id
             )
@@ -18,7 +18,7 @@ public class CRM_ThemeUtils_Test {
             new Common_Code__c(
                 Name = 'Dagpenger',
                 CRM_Code_Set__c = 'Tema',
-                CRM_Code__c = 'ab00002',
+                CRM_Code__c = 'DAG',
                 CRM_Archive_Theme__c = true,
                 CRM_Parent_Code__c = themeGroup.Id
             )
@@ -47,7 +47,7 @@ public class CRM_ThemeUtils_Test {
             new Common_Code__c(
                 Name = 'Papirmeldekort',
                 CRM_Code_set__c = 'Gjelder',
-                CRM_Code__c = 'TMab0430',
+                CRM_Code__c = 'AAPTMab0430',
                 CRM_Parent_Code__c = themes[0].Id,
                 CRM_Subtheme__c = subthemes[1].Id
             )
@@ -56,7 +56,7 @@ public class CRM_ThemeUtils_Test {
             new Common_code__c(
                 Name = 'Utbetaling',
                 CRM_Code_set__c = 'Gjelder',
-                CRM_Code__c = 'TYae0007',
+                CRM_Code__c = 'AAPTYae0007',
                 CRM_Parent_Code__c = themes[0].Id,
                 CRM_Subtype__c = subtypes[0].Id
             )
@@ -65,7 +65,7 @@ public class CRM_ThemeUtils_Test {
             new Common_code__c(
                 Name = 'Dagpenger under permittering - Utland',
                 CRM_Code_set__c = 'Gjelder',
-                CRM_Code__c = 'TMab0005TYae0106',
+                CRM_Code__c = 'DAGTMab0005TYae0106',
                 CRM_Parent_Code__c = themes[1].Id,
                 CRM_Subtheme__c = subthemes[0].Id,
                 CRM_Subtype__c = subtypes[1].Id

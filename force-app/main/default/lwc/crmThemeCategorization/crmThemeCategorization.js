@@ -15,6 +15,8 @@ export default class CRMThemeCategorization extends LightningElement {
     chosenThemeGroup;
     chosenTheme;
     chosenGjelder;
+    chosenSubtheme;
+    chosenSubtype;
     gjelderList;
     themes;
 
@@ -39,7 +41,30 @@ export default class CRMThemeCategorization extends LightningElement {
                 if (this.themeCode != '') this.publishFieldChange('themeCode', this.themeCode);
                 this.filterThemes();
             }
-            if (this.chosenTheme) this.filterGjelder();
+
+            // This logic checks if there are any given subthemes and subtypes,
+            // and finds the correct gjelder relation for the combination
+            if (this.chosenTheme) {
+                this.filterGjelder();
+                if (this.chosenSubtheme || this.chosenSubtype) {
+                    this.chosenGjelder = '';
+                    let validGjelder =
+                        this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
+                            ? this.gjelderMap[this.theme]
+                            : [];
+                    for (let gjelder of validGjelder) {
+                        if (
+                            gjelder.CRM_Subtheme__c === this.chosenSubtheme &&
+                            gjelder.CRM_Subtype__c === this.chosenSubtype
+                        ) {
+                            this.chosenGjelder = gjelder.Id;
+                            this.publishFieldChange('subthemeCode', gjelder.CRM_Subtheme_Code__c);
+                            this.publishFieldChange('subtypeCode', gjelder.CRM_Subtype_Code__c);
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -47,6 +72,8 @@ export default class CRMThemeCategorization extends LightningElement {
         this.chosenThemeGroup = event.detail.value;
         this.chosenTheme = null;
         this.chosenGjelder = null;
+        this.chosenSubtheme = null;
+        this.chosenSubtype = null;
         this.filterThemes();
 
         this.publishFieldChange('themeGroupCode', this.themeGroupCode);
@@ -55,6 +82,9 @@ export default class CRMThemeCategorization extends LightningElement {
     handleThemeChange(event) {
         this.chosenTheme = event.detail.value;
         this.chosenGjelder = null;
+        this.chosenSubtheme = null;
+        this.chosenSubtype = null;
+
         this.filterGjelder();
 
         this.publishFieldChange('themeCode', this.themeCode);
@@ -62,9 +92,11 @@ export default class CRMThemeCategorization extends LightningElement {
 
     handleGjelderChange(event) {
         this.chosenGjelder = event.detail.value;
+        this.chosenSubtheme = this.subthemeId;
+        this.chosenSubtype = this.subtypeId;
 
-        // this.publishFieldChange('subThemeCode', this.subthemeCode);
-        // this.publishFieldChange('subTypeCode', this.subtypeCode);
+        this.publishFieldChange('subThemeCode', this.subthemeCode);
+        this.publishFieldChange('subTypeCode', this.subtypeCode);
     }
 
     @api
@@ -86,12 +118,21 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     @api
-    get gjelder() {
-        return this.chosenGjelder;
+    get subtheme() {
+        return this.chosenSubtheme;
     }
 
-    set gjelder(gjelderValue) {
-        this.chosenGjelder = gjelderValue;
+    set subtheme(subthemeValue) {
+        this.chosenSubtheme = subthemeValue;
+    }
+
+    @api
+    get subtype() {
+        return this.chosenSubtype;
+    }
+
+    set subtype(subtypeValue) {
+        this.chosenSubtype = subtypeValue;
     }
 
     @api
@@ -128,14 +169,14 @@ export default class CRMThemeCategorization extends LightningElement {
         let subthemeCode = '';
 
         //Added subtheme check as flow was failing when chosing themes with no subthemes
-        if (this.gjelder) {
+        if (this.chosenGjelder) {
             let validGjelder =
                 this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
                     ? this.gjelderMap[this.theme]
                     : [];
-            for (let gjelderSingle of validGjelder) {
-                if (gjelderSingle.Id === this.gjelder) {
-                    subthemeCode = gjelderSingle.CRM_Subtheme_Code__c;
+            for (let gjelder of validGjelder) {
+                if (gjelder.Id === this.chosenGjelder) {
+                    subthemeCode = gjelder.CRM_Subtheme_Code__c;
                     break;
                 }
             }
@@ -147,20 +188,60 @@ export default class CRMThemeCategorization extends LightningElement {
     @api
     get subtypeCode() {
         let subtypeCode = '';
-        if (this.gjelder) {
+        if (this.chosenGjelder) {
             let validGjelder =
                 this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
                     ? this.gjelderMap[this.theme]
                     : [];
-            for (let gjelderSingle of validGjelder) {
-                if (gjelderSingle.Id === this.gjelder) {
-                    subtypeCode = gjelderSingle.CRM_Subtype_Code__c;
+            for (let gjelder of validGjelder) {
+                if (gjelder.Id === this.chosenGjelder) {
+                    subtypeCode = gjelder.CRM_Subtype_Code__c;
                     break;
                 }
             }
         }
 
         return subtypeCode;
+    }
+
+    @api
+    get subthemeId() {
+        let subthemeId = '';
+
+        //Added subtheme check as flow was failing when chosing themes with no subthemes
+        if (this.chosenGjelder) {
+            let validGjelder =
+                this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
+                    ? this.gjelderMap[this.theme]
+                    : [];
+            for (let gjelder of validGjelder) {
+                if (gjelder.Id === this.chosenGjelder) {
+                    subthemeId = gjelder.CRM_Subtheme__c;
+                    break;
+                }
+            }
+        }
+
+        return subthemeId;
+    }
+
+    @api
+    get subtypeId() {
+        let subtypeId = '';
+        if (this.chosenGjelder) {
+            let validGjelder =
+                this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
+                    ? this.gjelderMap[this.theme]
+                    : [];
+            for (let gjelder of validGjelder) {
+                if (gjelder.Id === this.chosenGjelder) {
+                    subtypeId = gjelder.CRM_Subtype__c;
+                    break;
+                }
+            }
+        }
+
+        return subtypeId;
     }
 
     filterThemes() {
@@ -207,7 +288,10 @@ export default class CRMThemeCategorization extends LightningElement {
             returnGjelder.push({ label: '(Ikke valgt)', value: '' });
         }
         listGjelder.forEach((gjelder) => {
-            returnGjelder.push({ label: gjelder.Name, value: gjelder.Id });
+            returnGjelder.push({
+                label: gjelder.Name,
+                value: gjelder.Id
+            });
         });
 
         this.gjelderList = returnGjelder;
