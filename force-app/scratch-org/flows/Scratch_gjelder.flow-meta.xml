@@ -1,43 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>52.0</apiVersion>
-    <assignments>
-        <name>setValues</name>
-        <label>setValues</label>
-        <locationX>260</locationX>
-        <locationY>408</locationY>
-        <assignmentItems>
-            <assignToReference>themeChosen</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>ThemeCat.themeCode</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subThemeChosen</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>ThemeCat.subthemeCode</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subTypeChosen</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>ThemeCat.subtypeCode</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>themeGroupChosen</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>ThemeCat.themeGroupCode</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Hei_screen</targetReference>
-        </connector>
-    </assignments>
     <interviewLabel>Scratch gjelder {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Scratch gjelder</label>
     <processMetadataValues>
@@ -60,39 +23,63 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <screens>
-        <name>Hei_screen</name>
-        <label>Hei screen</label>
-        <locationX>508</locationX>
-        <locationY>407</locationY>
+        <name>Hei</name>
+        <label>Hei</label>
+        <locationX>217</locationX>
+        <locationY>289</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>test</targetReference>
+        </connector>
         <fields>
-            <name>textDisplay</name>
-            <fieldText>&lt;p&gt;themeGroup: {!themeGroupChosen}&lt;/p&gt;&lt;p&gt;theme: {!themeChosen}&lt;/p&gt;&lt;p&gt;subtheme: {!subThemeChosen}&lt;/p&gt;&lt;p&gt;subtype: {!subTypeChosen}&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
+            <name>cat</name>
+            <extensionName>c:crmThemeCategorization</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>themeGroup</name>
+                <value>
+                    <stringValue>a071x000009Z1H4AAK</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>theme</name>
+                <value>
+                    <stringValue>a071x000009Z1H9AAK</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>subtheme</name>
+                <value>
+                    <stringValue>a071x000009Z1vMAAS</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>subtype</name>
+                <value>
+                    <stringValue>a071x000009Z1reAAC</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <name>Theme_Picker</name>
-        <label>Theme Picker</label>
-        <locationX>260</locationX>
-        <locationY>216</locationY>
+        <name>test</name>
+        <label>test</label>
+        <locationX>218</locationX>
+        <locationY>430</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
-        <connector>
-            <targetReference>setValues</targetReference>
-        </connector>
         <fields>
-            <name>ThemeCat</name>
-            <extensionName>c:crmThemeCategorization</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <name>tekst</name>
+            <fieldText>&lt;p&gt;Group theme: {!cat.themeGroupCode}&lt;/p&gt;&lt;p&gt;Theme: &lt;span style=&quot;color: rgb(62, 62, 60); background-color: rgb(255, 255, 255);&quot;&gt;{!cat.themeCode}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Subtheme: &lt;span style=&quot;color: rgb(62, 62, 60); background-color: rgb(255, 255, 255);&quot;&gt;{!cat.subthemeCode}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Subtype: &lt;span style=&quot;color: rgb(62, 62, 60); background-color: rgb(255, 255, 255);&quot;&gt;{!cat.subtypeCode}&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -101,7 +88,7 @@
         <locationX>50</locationX>
         <locationY>50</locationY>
         <connector>
-            <targetReference>Theme_Picker</targetReference>
+            <targetReference>Hei</targetReference>
         </connector>
     </start>
     <status>Draft</status>
