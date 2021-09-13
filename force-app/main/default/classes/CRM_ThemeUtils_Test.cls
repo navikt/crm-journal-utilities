@@ -82,7 +82,7 @@ public class CRM_ThemeUtils_Test {
 
         System.assertEquals('Arbeid', categories.themeGroups[0].Name);
         String themeGroupId = categories.themeGroups[0].Id;
-        System.assertEquals('AAP', categories.themeMap.get(themeGroupId)[0].Name);
+        System.assertEquals('Arbeidavklaringspenger', categories.themeMap.get(themeGroupId)[0].Name);
         String themeId = categories.themeMap.get(themeGroupId)[0].Id;
         System.assertEquals('Papirmeldekort', categories.gjelderMap.get(themeId)[0].Name);
     }
