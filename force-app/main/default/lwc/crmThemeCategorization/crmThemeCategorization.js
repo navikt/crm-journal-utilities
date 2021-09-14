@@ -7,15 +7,17 @@ import { publish, MessageContext } from 'lightning/messageService';
 //#### LABEL IMPORTS ####
 import VALIDATION_ERROR from '@salesforce/label/c.CRM_Theme_Categorization_Validation_Error';
 
-export default class NksThemeCategorization extends LightningElement {
+export default class CRMThemeCategorization extends LightningElement {
     @track themeGroups = [];
-    @track subthemeMap;
+    @track gjelderMap;
     @track themeMap;
     categories;
     chosenThemeGroup;
     chosenTheme;
+    chosenGjelder;
     chosenSubtheme;
-    subthemes;
+    chosenSubtype;
+    gjelderList;
     themes;
 
     @wire(MessageContext)
@@ -31,22 +33,47 @@ export default class NksThemeCategorization extends LightningElement {
             });
 
             this.themeGroups = groups;
-            this.subthemeMap = data.subthemeMap;
             this.themeMap = data.themeMap;
+            this.gjelderMap = data.gjelderMap;
 
             if (this.chosenThemeGroup || this.chosenTheme) {
                 if (this.themeGroupCode != '') this.publishFieldChange('themeGroupCode', this.themeGroupCode);
                 if (this.themeCode != '') this.publishFieldChange('themeCode', this.themeCode);
                 this.filterThemes();
             }
-            if (this.chosenTheme) this.filterSubthemes();
+
+            // This logic checks if there are any given subthemes and subtypes,
+            // and finds the correct gjelder relation for the combination
+            if (this.chosenTheme) {
+                this.filterGjelder();
+                if (this.chosenSubtheme || this.chosenSubtype) {
+                    this.chosenGjelder = '';
+                    let validGjelder =
+                        this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
+                            ? this.gjelderMap[this.theme]
+                            : [];
+                    for (let gjelder of validGjelder) {
+                        if (
+                            gjelder.CRM_Subtheme__c === this.chosenSubtheme &&
+                            gjelder.CRM_Subtype__c === this.chosenSubtype
+                        ) {
+                            this.chosenGjelder = gjelder.Id;
+                            this.publishFieldChange('subthemeCode', gjelder.CRM_Subtheme_Code__c);
+                            this.publishFieldChange('subtypeCode', gjelder.CRM_Subtype_Code__c);
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 
     handleThemeGroupChange(event) {
         this.chosenThemeGroup = event.detail.value;
         this.chosenTheme = null;
+        this.chosenGjelder = null;
         this.chosenSubtheme = null;
+        this.chosenSubtype = null;
         this.filterThemes();
 
         this.publishFieldChange('themeGroupCode', this.themeGroupCode);
@@ -54,16 +81,22 @@ export default class NksThemeCategorization extends LightningElement {
 
     handleThemeChange(event) {
         this.chosenTheme = event.detail.value;
+        this.chosenGjelder = null;
         this.chosenSubtheme = null;
-        this.filterSubthemes();
+        this.chosenSubtype = null;
+
+        this.filterGjelder();
 
         this.publishFieldChange('themeCode', this.themeCode);
     }
 
-    handleSubthemeChange(event) {
-        this.chosenSubtheme = event.detail.value;
+    handleGjelderChange(event) {
+        this.chosenGjelder = event.detail.value;
+        this.chosenSubtheme = this.subthemeId;
+        this.chosenSubtype = this.subtypeId;
 
         this.publishFieldChange('subThemeCode', this.subthemeCode);
+        this.publishFieldChange('subTypeCode', this.subtypeCode);
     }
 
     @api
@@ -91,6 +124,15 @@ export default class NksThemeCategorization extends LightningElement {
 
     set subtheme(subthemeValue) {
         this.chosenSubtheme = subthemeValue;
+    }
+
+    @api
+    get subtype() {
+        return this.chosenSubtype;
+    }
+
+    set subtype(subtypeValue) {
+        this.chosenSubtype = subtypeValue;
     }
 
     @api
@@ -127,20 +169,79 @@ export default class NksThemeCategorization extends LightningElement {
         let subthemeCode = '';
 
         //Added subtheme check as flow was failing when chosing themes with no subthemes
-        if (this.subtheme) {
-            let subthemes =
-                this.chosenTheme && this.subthemeMap && Object.keys(this.subthemeMap).length !== 0
-                    ? this.subthemeMap[this.theme]
+        if (this.chosenGjelder) {
+            let validGjelder =
+                this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
+                    ? this.gjelderMap[this.theme]
                     : [];
-            for (let subtheme of subthemes) {
-                if (subtheme.Id === this.subtheme) {
-                    subthemeCode = subtheme.CRM_Code__c;
+            for (let gjelder of validGjelder) {
+                if (gjelder.Id === this.chosenGjelder) {
+                    subthemeCode = gjelder.CRM_Subtheme_Code__c;
                     break;
                 }
             }
         }
 
         return subthemeCode;
+    }
+
+    @api
+    get subtypeCode() {
+        let subtypeCode = '';
+        if (this.chosenGjelder) {
+            let validGjelder =
+                this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
+                    ? this.gjelderMap[this.theme]
+                    : [];
+            for (let gjelder of validGjelder) {
+                if (gjelder.Id === this.chosenGjelder) {
+                    subtypeCode = gjelder.CRM_Subtype_Code__c;
+                    break;
+                }
+            }
+        }
+
+        return subtypeCode;
+    }
+
+    @api
+    get subthemeId() {
+        let subthemeId = '';
+
+        //Added subtheme check as flow was failing when chosing themes with no subthemes
+        if (this.chosenGjelder) {
+            let validGjelder =
+                this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
+                    ? this.gjelderMap[this.theme]
+                    : [];
+            for (let gjelder of validGjelder) {
+                if (gjelder.Id === this.chosenGjelder) {
+                    subthemeId = gjelder.CRM_Subtheme__c;
+                    break;
+                }
+            }
+        }
+
+        return subthemeId;
+    }
+
+    @api
+    get subtypeId() {
+        let subtypeId = '';
+        if (this.chosenGjelder) {
+            let validGjelder =
+                this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
+                    ? this.gjelderMap[this.theme]
+                    : [];
+            for (let gjelder of validGjelder) {
+                if (gjelder.Id === this.chosenGjelder) {
+                    subtypeId = gjelder.CRM_Subtype__c;
+                    break;
+                }
+            }
+        }
+
+        return subtypeId;
     }
 
     filterThemes() {
@@ -173,31 +274,34 @@ export default class NksThemeCategorization extends LightningElement {
         }
     }
 
-    filterSubthemes() {
-        let listSubthemes =
+    filterGjelder() {
+        let listGjelder =
             this.chosenTheme &&
-            this.subthemeMap &&
-            Object.keys(this.subthemeMap).length !== 0 &&
-            this.chosenTheme in this.subthemeMap
-                ? this.subthemeMap[this.chosenTheme]
+            this.gjelderMap &&
+            Object.keys(this.gjelderMap).length !== 0 &&
+            this.chosenTheme in this.gjelderMap
+                ? this.gjelderMap[this.chosenTheme]
                 : [];
-        let returnThemes = [];
-        //Adding blank value for subthemes to allow removing value after one has been set.
-        if (listSubthemes.length !== 0) {
-            returnThemes.push({ label: '(Ikke valgt)', value: '' });
+        let returnGjelder = [];
+        //Adding blank value for gjelder to allow removing value after one has been set.
+        if (listGjelder.length !== 0) {
+            returnGjelder.push({ label: '(Ikke valgt)', value: '' });
         }
-        listSubthemes.forEach((subtheme) => {
-            returnThemes.push({ label: subtheme.Name, value: subtheme.Id });
+        listGjelder.forEach((gjelder) => {
+            returnGjelder.push({
+                label: gjelder.Name,
+                value: gjelder.Id
+            });
         });
 
-        this.subthemes = returnThemes;
+        this.gjelderList = returnGjelder;
     }
 
-    get subthemePlaceholder() {
+    get gjelderPlaceholder() {
         let placeholder = '(Ikke valgt)';
-        if (this.chosenTheme && this.subthemeMap) {
-            let themeInMap = this.chosenTheme in this.subthemeMap;
-            placeholder = this.subthemeMap && themeInMap ? '(Ikke valgt)' : '(Ingen undertema)';
+        if (this.chosenTheme && this.gjelderMap) {
+            let themeInMap = this.chosenTheme in this.gjelderMap;
+            placeholder = this.gjelderMap && themeInMap ? '(Ikke valgt)' : '(Ingen undertema)';
         }
 
         return placeholder;
@@ -207,12 +311,12 @@ export default class NksThemeCategorization extends LightningElement {
         return !this.chosenThemeGroup ? true : false;
     }
 
-    get subthemeDisabled() {
+    get gjelderDisabled() {
         let disabled =
             !this.chosenTheme ||
             (this.chosenTheme &&
-                this.subthemeMap &&
-                (Object.keys(this.subthemeMap).length === 0 || !(this.chosenTheme in this.subthemeMap)));
+                this.gjelderMap &&
+                (Object.keys(this.gjelderMap).length === 0 || !(this.chosenTheme in this.gjelderMap)));
         return disabled;
     }
 
