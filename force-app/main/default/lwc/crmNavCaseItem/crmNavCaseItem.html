@@ -1,6 +1,6 @@
 <template>
     <div
-        class="slds-m-top_x-small case-tile-bg"
+        class={className}
         onclick={caseSelected}
         onkeypress={checkKeyPress}
         role="button"
@@ -10,8 +10,13 @@
     >
         <lightning-layout vertical-align="center">
             <lightning-layout-item size="2" class="slds-align_absolute-center">
-                <lightning-layout horizontal-align="center" vertical-align="center">
-                    <lightning-icon icon-name="utility:success" data-selected={selected} size="x-small">
+                <lightning-layout horizontal-align="center" vertical-align="center" if:true={selected}>
+                    <lightning-icon
+                        icon-name="utility:check"
+                        data-selected={selected}
+                        size="xx-small"
+                        alternative-text="Checked"
+                    >
                     </lightning-icon>
                 </lightning-layout>
             </lightning-layout-item>
