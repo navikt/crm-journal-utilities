@@ -1,6 +1,6 @@
 .case-tile-bg  {
     cursor: pointer;
-    --sds-c-icon-color-foreground-default: lightgrey;
+    --sds-c-icon-color-foreground-default: white;
 }
 
 .case-tile-bg:hover {
