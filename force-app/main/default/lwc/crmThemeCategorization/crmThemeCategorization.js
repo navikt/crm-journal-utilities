@@ -28,7 +28,7 @@ export default class CRMThemeCategorization extends LightningElement {
         if (data) {
             this.categories = data;
             let groups = [];
-            this.categories.themeGroups.forEach((themeGroup) => {
+            this.categories.themeGroups.forEach(themeGroup => {
                 groups.push({ label: themeGroup.Name, value: themeGroup.Id });
             });
 
@@ -49,7 +49,10 @@ export default class CRMThemeCategorization extends LightningElement {
                 if (this.chosenSubtheme || this.chosenSubtype) {
                     this.chosenGjelder = '';
                     let validGjelder =
-                        this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
+                        this.theme &&
+                        this.gjelderMap &&
+                        Object.keys(this.gjelderMap).length !== 0 &&
+                        this.gjelderMap.hasOwnProperty(this.theme)
                             ? this.gjelderMap[this.theme]
                             : [];
                     for (let gjelder of validGjelder) {
@@ -138,8 +141,11 @@ export default class CRMThemeCategorization extends LightningElement {
     @api
     get themeCode() {
         let themeCode = '';
+        let themes =
+            this.themeGroup && this.themeMap && this.themeMap.hasOwnProperty(this.themeGroup)
+                ? this.themeMap[this.themeGroup]
+                : [];
 
-        let themes = this.themeGroup && this.themeMap ? this.themeMap[this.themeGroup] : [];
         for (let theme of themes) {
             if (theme.Id === this.theme) {
                 themeCode = theme.CRM_Code__c;
@@ -250,7 +256,7 @@ export default class CRMThemeCategorization extends LightningElement {
         if (this.chosenTheme && !this.chosenThemeGroup) {
             for (const key in this.themeMap) {
                 if (this.themeMap.hasOwnProperty(key)) {
-                    this.themeMap[key].forEach((theme) => {
+                    this.themeMap[key].forEach(theme => {
                         if (theme.Id == this.theme) {
                             returnThemes.push({
                                 label: theme.Name,
@@ -267,7 +273,7 @@ export default class CRMThemeCategorization extends LightningElement {
                 this.themeGroup && this.themeMap && this.themeGroup in this.themeMap
                     ? this.themeMap[this.themeGroup]
                     : [];
-            listThemes.forEach((theme) => {
+            listThemes.forEach(theme => {
                 returnThemes.push({ label: theme.Name, value: theme.Id });
             });
             this.themes = returnThemes;
@@ -287,7 +293,7 @@ export default class CRMThemeCategorization extends LightningElement {
         if (listGjelder.length !== 0) {
             returnGjelder.push({ label: '(Ikke valgt)', value: '' });
         }
-        listGjelder.forEach((gjelder) => {
+        listGjelder.forEach(gjelder => {
             returnGjelder.push({
                 label: gjelder.Name,
                 value: gjelder.Id
