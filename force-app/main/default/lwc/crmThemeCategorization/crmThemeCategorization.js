@@ -295,7 +295,7 @@ export default class CRMThemeCategorization extends LightningElement {
         }
         listGjelder.forEach(gjelder => {
             returnGjelder.push({
-                label: gjelder.Name,
+                label: gjelder.CRM_Display_Name__c,
                 value: gjelder.Id
             });
         });
