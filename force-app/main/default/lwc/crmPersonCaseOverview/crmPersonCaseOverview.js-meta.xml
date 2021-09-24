@@ -74,6 +74,18 @@
                 role="outputOnly"
             />
                 <property
+                name="selectedSubtype"
+                type="String"
+                label="Selected subtype"
+                role="outputOnly"
+            />
+                <property
+                name="selectedSubtypeSfId"
+                type="String"
+                label="Selected subtype SF ID"
+                role="outputOnly"
+            />
+                <property
                 name="selectedCaseThemeSfId"
                 type="String"
                 label="Selected Theme SF ID"
