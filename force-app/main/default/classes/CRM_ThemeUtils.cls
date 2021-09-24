@@ -24,6 +24,7 @@ public class CRM_ThemeUtils {
                     SELECT
                         Id,
                         Name,
+                        CRM_Display_Name__c,
                         CRM_Code__c,
                         CRM_Code_Set__c,
                         CRM_Parent_Code__r.CRM_Code__c,
@@ -33,7 +34,7 @@ public class CRM_ThemeUtils {
                         CRM_Subtype_Code__c
                     FROM Child_Codes__r
                     WHERE CRM_Code_Set__c = 'Gjelder' AND CRM_Active__c = TRUE
-                    ORDER BY Name
+                    ORDER BY CRM_Display_Name__c
                 )
             FROM Common_Code__c
             WHERE CRM_Code_set__c = 'Tema' AND CRM_Active__c = TRUE AND CRM_Archive_Theme__c = TRUE

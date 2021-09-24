@@ -72,6 +72,9 @@ public class CRM_ThemeUtils_Test {
             )
         );
         gjelder = (List<Common_Code__c>) JOURNAL_TestDataFactory.createRecordList(gjelder);
+
+        gjelder[2].CRM_Display_Name__c = 'Permitert dagpenger i utland';
+        update gjelder[2];
     }
 
     @isTest
@@ -85,5 +88,7 @@ public class CRM_ThemeUtils_Test {
         System.assertEquals('Arbeidavklaringspenger', categories.themeMap.get(themeGroupId)[0].Name);
         String themeId = categories.themeMap.get(themeGroupId)[0].Id;
         System.assertEquals('Papirmeldekort', categories.gjelderMap.get(themeId)[0].Name);
+        String themeDisplayId = categories.themeMap.get(themeGroupId)[1].Id;
+        System.assertEquals('Permitert dagpenger i utland', categories.gjelderMap.get(themeDisplayId)[0].CRM_Display_Name__c);
     }
 }
