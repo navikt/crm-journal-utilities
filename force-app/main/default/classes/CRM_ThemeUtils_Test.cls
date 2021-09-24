@@ -38,9 +38,9 @@ public class CRM_ThemeUtils_Test {
         subthemes = (List<Common_Code__c>) JOURNAL_TestDataFactory.createRecordList(subthemes);
 
         List<Common_code__c> subtypes = new List<Common_code__c>{
-            new Common_Code__c(Name = 'Utbetaling', CRM_Code_Set__c = 'Behandlingstype', CRM_Code__c = 'ae0007')
+            new Common_Code__c(Name = 'Utbetaling', CRM_Code_Set__c = 'Behandlingstyper', CRM_Code__c = 'ae0007')
         };
-        subtypes.add(new Common_Code__c(Name = 'Utland', CRM_Code_Set__c = 'Behandlingstype', CRM_Code__c = 'ae0106'));
+        subtypes.add(new Common_Code__c(Name = 'Utland', CRM_Code_Set__c = 'Behandlingstyper', CRM_Code__c = 'ae0106'));
         subtypes = (List<Common_Code__c>) JOURNAL_TestDataFactory.createRecordList(subtypes);
 
         List<Common_code__c> gjelder = new List<Common_code__c>{
