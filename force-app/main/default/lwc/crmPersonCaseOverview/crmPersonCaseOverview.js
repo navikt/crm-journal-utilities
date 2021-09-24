@@ -271,6 +271,26 @@ export default class NksPersonCaseOverview extends LightningElement {
         }
         return subtheme;
     }
+    
+    @api
+    get selectedSubtypeSfId() {
+        let subtypeSfId;
+        if (this.isGeneralCase === true) {
+            let themeCmp = this.template.querySelector('c-crm-theme-categorization');
+            subtypeSfId = themeCmp.subtype;
+        }
+        return subtypeSfId;
+    }
+
+    @api
+    get selectedSubtype() {
+        let subtype;
+        if (this.isGeneralCase === true) {
+            let themeCmp = this.template.querySelector('c-crm-theme-categorization');
+            subtype = themeCmp.subtypeCode;
+        }
+        return subtype;
+    }
 
     get isGeneralCase() {
         return this.selectedCaseType === 'GENERELL_SAK';
