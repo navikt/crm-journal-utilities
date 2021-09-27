@@ -37,6 +37,20 @@
 &quot;arkivsaksnummer&quot;: &quot;1234567&quot;
 },
 {
+&quot;fagsakId&quot;: &quot;3803G09&quot;,
+&quot;tema&quot;: &quot;DAG&quot;,
+&quot;sakstype&quot;: &quot;FAGSAK&quot;,
+&quot;datoOpprettet&quot;: &quot;2018-01-18T13:57:21&quot;,
+&quot;arkivsaksnummer&quot;: &quot;12131415&quot;
+},
+{
+&quot;fagsakId&quot;: &quot;3803G19&quot;,
+&quot;tema&quot;: &quot;UFO&quot;,
+&quot;sakstype&quot;: &quot;FAGSAK&quot;,
+&quot;datoOpprettet&quot;: &quot;2020-01-18T13:57:21&quot;,
+&quot;arkivsaksnummer&quot;: &quot;12131418&quot;
+},
+{
 &quot;fagsakId&quot;: &quot;3803F01&quot;,
 &quot;tema&quot;: &quot;KON&quot;,
 &quot;sakstype&quot;: &quot;FAGSAK&quot;,
