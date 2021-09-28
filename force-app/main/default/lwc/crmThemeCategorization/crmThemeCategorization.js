@@ -61,8 +61,8 @@ export default class CRMThemeCategorization extends LightningElement {
                             gjelder.CRM_Subtype__c === this.chosenSubtype
                         ) {
                             this.chosenGjelder = gjelder.Id;
-                            this.publishFieldChange('subthemeCode', gjelder.CRM_Subtheme_Code__c);
-                            this.publishFieldChange('subtypeCode', gjelder.CRM_Subtype_Code__c);
+                            this.publishFieldChange('subThemeCode', gjelder.CRM_Subtheme_Code__c);
+                            this.publishFieldChange('subTypeCode', gjelder.CRM_Subtype_Code__c);
                             break;
                         }
                     }
