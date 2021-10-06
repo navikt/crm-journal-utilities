@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CRM_NAV_Case_Legacy_System__c</fullName>
+    <description>If case type = FAGSAK, this defines which legacy system that handles the case. Required for journal purposes using Dokarkiv API</description>
+    <externalId>false</externalId>
+    <label>NAV Case Legacy System</label>
+    <length>64</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
