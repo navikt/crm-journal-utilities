@@ -40,7 +40,7 @@ public class CRM_JournalUtilities {
         CRM_JournalService service = new CRM_JournalService();
         UtilityResponse resp = new UtilityResponse();
 
-        Boolean complete = journalRequest.tema != 'BID' ? true : false; //Do not automatically complete BID journals as they will not be published to kafka
+        Boolean complete = true; //Removed BID specific handling as a results of FAGSYSTEM-189315
         HttpResponse httpResp = service.postJournal(journalRequest, complete, navIdent);
         Integer statusCode = httpResp.getStatusCode();
 
