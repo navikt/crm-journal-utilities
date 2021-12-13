@@ -46,7 +46,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>NAV Case Validation Error</shortDescription>
-        <value>Velg minst en sak for journalføring.</value>
+        <value>Du må velge en sak å journalføre på.</value>
     </labels>
     <labels>
         <fullName>CRM_No_Cases_for_Selected_Theme_Group</fullName>
