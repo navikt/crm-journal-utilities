@@ -8,21 +8,23 @@ public class CRM_JournalUtilities {
     public static List<UtilityResponse> handleRequest(List<utilityRequest> request) {
         List<UtilityResponse> returnList = new List<UtilityResponse>();
 
-        switch on (request[0].requestType) {
-            when 'GENERATE_DOCUMENT' {
-                if (String.isNotBlank(request[0].documentString)) {
-                    returnList.add(generateDocument(request[0].documentString));
-                } else {
-                    //VF generation
-                    returnList.add(generateDocumentVf(request[0].visualForceReference));
+        for (UtilityRequest utReq : request) {     
+            switch on (utReq.requestType) {
+                when 'GENERATE_DOCUMENT' {
+                    if (String.isNotBlank(utReq.documentString)) {
+                        returnList.add(generateDocument(utReq.documentString));
+                    } else {
+                        //VF generation
+                        returnList.add(generateDocumentVf(utReq.visualForceReference));
+                    }
                 }
-            }
-            when 'BASE_64_ENCODE' {
-                String document = EncodingUtil.base64Encode(Blob.valueOf(request[0].documentString));
-                returnList.add(new UtilityResponse(true, document, null, null, null));
-            }
-            when 'POST_JOURNAL' {
-                returnList.add(postJournal(request[0].journalRequest, request[0].referenceId, request[0].navIdent));
+                when 'BASE_64_ENCODE' {
+                    String document = EncodingUtil.base64Encode(Blob.valueOf(utReq.documentString));
+                    returnList.add(new UtilityResponse(true, document, null, null, null));
+                }
+                when 'POST_JOURNAL' {
+                    returnList.add(postJournal(utReq.journalRequest, utReq.referenceId, utReq.navIdent));
+                }
             }
         }
 
