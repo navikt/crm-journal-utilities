@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>50.0</apiVersion>
     <isExposed>true</isExposed>
@@ -13,8 +13,20 @@
             <property name="theme" type="String" label="Theme: (Salesforce ID)" />
             <property name="subtheme" type="String" label="Subtheme: (Salesforce ID)" />
             <property name="subtype" type="String" label="Subtype: (Salesforce ID)" />
+            <property
+                name="paddingBottom"
+                type="Boolean"
+                label="Add padding to the bottom"
+                default="false"
+                role="inputOnly"
+            />
 
-            <property name="themeGroupCode" type="String" label="Output theme group code from kodeverk" role="outputOnly" />
+            <property
+                name="themeGroupCode"
+                type="String"
+                label="Output theme group code from kodeverk"
+                role="outputOnly"
+            />
             <property name="themeCode" type="String" label="Output theme code from kodeverk" role="outputOnly" />
             <property name="subthemeCode" type="String" label="Output subtheme code from kodeverk" role="outputOnly" />
             <property name="subtypeCode" type="String" label="Output subtype code from kodeverk" role="outputOnly" />

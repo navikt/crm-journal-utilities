@@ -19,6 +19,7 @@ export default class CRMThemeCategorization extends LightningElement {
     chosenSubtype;
     gjelderList;
     themes;
+    @api paddingBottom;
 
     @wire(MessageContext)
     messageContext;
@@ -28,7 +29,7 @@ export default class CRMThemeCategorization extends LightningElement {
         if (data) {
             this.categories = data;
             let groups = [];
-            this.categories.themeGroups.forEach(themeGroup => {
+            this.categories.themeGroups.forEach((themeGroup) => {
                 groups.push({ label: themeGroup.Name, value: themeGroup.Id });
             });
 
@@ -250,13 +251,19 @@ export default class CRMThemeCategorization extends LightningElement {
         return subtypeId;
     }
 
+    get wrapperClass() {
+        console.log('Getting the fleckin');
+        console.log(this.paddingBottom);
+        return this.paddingBottom ? 'wrapper' : '';
+    }
+
     filterThemes() {
         let returnThemes = [];
         //If the task already has a theme defined but no theme group
         if (this.chosenTheme && !this.chosenThemeGroup) {
             for (const key in this.themeMap) {
                 if (this.themeMap.hasOwnProperty(key)) {
-                    this.themeMap[key].forEach(theme => {
+                    this.themeMap[key].forEach((theme) => {
                         if (theme.Id == this.theme) {
                             returnThemes.push({
                                 label: theme.Name,
@@ -273,7 +280,7 @@ export default class CRMThemeCategorization extends LightningElement {
                 this.themeGroup && this.themeMap && this.themeGroup in this.themeMap
                     ? this.themeMap[this.themeGroup]
                     : [];
-            listThemes.forEach(theme => {
+            listThemes.forEach((theme) => {
                 returnThemes.push({ label: theme.Name, value: theme.Id });
             });
             this.themes = returnThemes;
@@ -293,7 +300,7 @@ export default class CRMThemeCategorization extends LightningElement {
         if (listGjelder.length !== 0) {
             returnGjelder.push({ label: '(Ikke valgt)', value: '' });
         }
-        listGjelder.forEach(gjelder => {
+        listGjelder.forEach((gjelder) => {
             returnGjelder.push({
                 label: gjelder.CRM_Display_Name__c,
                 value: gjelder.Id

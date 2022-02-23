@@ -31,7 +31,9 @@ export default class NksPersonCaseOverview extends LightningElement {
     themeMap;
     casesLoaded = false;
     error = false;
-    selectedCaseType = 'FAGSAK'; //Default value
+    // selectedCaseType = 'FAGSAK'; //Default value
+    selectedCaseType = 'GENERELL_SAK'; //Better value
+    @api paddingBottom;
 
     caseTypeOptions = [
         { label: 'Fagsak', value: 'FAGSAK' },
@@ -271,7 +273,7 @@ export default class NksPersonCaseOverview extends LightningElement {
         }
         return subtheme;
     }
-    
+
     @api
     get selectedSubtypeSfId() {
         let subtypeSfId;
