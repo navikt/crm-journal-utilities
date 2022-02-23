@@ -31,8 +31,7 @@ export default class NksPersonCaseOverview extends LightningElement {
     themeMap;
     casesLoaded = false;
     error = false;
-    // selectedCaseType = 'FAGSAK'; //Default value
-    selectedCaseType = 'GENERELL_SAK'; //Better value
+    selectedCaseType = 'FAGSAK'; //Default value
     @api paddingBottom;
 
     caseTypeOptions = [

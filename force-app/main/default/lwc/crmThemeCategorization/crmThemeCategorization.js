@@ -252,8 +252,6 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     get wrapperClass() {
-        console.log('Getting the fleckin');
-        console.log(this.paddingBottom);
         return this.paddingBottom ? 'wrapper' : '';
     }
 
