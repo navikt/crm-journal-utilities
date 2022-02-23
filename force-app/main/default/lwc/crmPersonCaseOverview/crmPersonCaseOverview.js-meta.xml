@@ -24,7 +24,7 @@
                 name="paddingBottom"
                 type="Boolean"
                 label="Add padding to the bottom of Generell"
-                default="true"
+                default="false"
                 role="inputOnly"
             />
                 <property name="selectedCaseId" type="String" label="NAV Case ID" role="outputOnly" />
