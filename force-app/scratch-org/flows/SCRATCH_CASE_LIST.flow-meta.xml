@@ -78,7 +78,7 @@
             <targetReference>Get_Person</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>ACCOUNT_ID</name>
         <dataType>String</dataType>
