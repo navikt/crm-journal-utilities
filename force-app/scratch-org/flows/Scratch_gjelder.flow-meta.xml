@@ -91,7 +91,7 @@
             <targetReference>Hei</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>subThemeChosen</name>
         <dataType>String</dataType>
