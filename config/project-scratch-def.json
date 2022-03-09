@@ -11,6 +11,7 @@
         "Sites",
         "ForceComPlatform",
         "Communities",
+        "Knowledge",
         "CustomerCommunity",
         "CustomerCommunityPlus",
         "ServiceCloud",
@@ -34,6 +35,13 @@
         },
         "liveAgentSettings": {
             "enableLiveAgent": true
+        },
+        "omniChannelSettings": {
+            "enableOmniChannel": true
+        },
+        "knowledgeSettings": {
+            "enableKnowledge": true,
+            "enableLightningKnowledge": true
         },
         "emailAdministrationSettings": {
             "enableEnhancedEmailEnabled": true
