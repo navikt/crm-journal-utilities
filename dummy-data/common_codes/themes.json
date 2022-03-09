@@ -39,6 +39,18 @@
         {
             "attributes": {
                 "type": "Common_Code__c",
+                "referenceId": "BARRef"
+            },
+            "Name": "Bidrag",
+            "CRM_Code__c": "BID",
+            "CRM_Active__c": true,
+            "CRM_Archive_Theme__c": true,
+            "CRM_Code_Set__c": "Tema",
+            "CRM_Parent_Code__c": "@FamilieRef"
+        },
+        {
+            "attributes": {
+                "type": "Common_Code__c",
                 "referenceId": "KONRef"
             },
             "Name": "Kontantstøtte",
