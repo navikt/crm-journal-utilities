@@ -52,7 +52,7 @@ export default class NksPersonCaseOverview extends LightningElement {
             let themeGroups = [{ label: 'Alle', value: 'ALL' }];
             let mappedThemes = {};
 
-            data.themeGroups.forEach((themeGroup) => {
+            data.themeGroups.forEach(themeGroup => {
                 themeGroups.push({
                     label: themeGroup.Name,
                     value: themeGroup.Id
@@ -61,7 +61,7 @@ export default class NksPersonCaseOverview extends LightningElement {
                 let groupThemes = {};
                 groupThemes.themes = [];
                 if (data.themeMap[themeGroup.Id]) {
-                    groupThemes.themes = data.themeMap[themeGroup.Id].map((theme) => {
+                    groupThemes.themes = data.themeMap[themeGroup.Id].map(theme => {
                         return {
                             themeCode: theme.CRM_Code__c,
                             themeSfId: theme.Id,
@@ -70,7 +70,7 @@ export default class NksPersonCaseOverview extends LightningElement {
                     });
                 }
                 //Property function to determine if the group of themes includes an input theme
-                groupThemes.hasTheme = (inputTheme) => {
+                groupThemes.hasTheme = inputTheme => {
                     let returnTheme = null;
                     for (let idx = 0; idx < groupThemes.themes.length; idx++) {
                         const theme = groupThemes.themes[idx];
@@ -82,7 +82,7 @@ export default class NksPersonCaseOverview extends LightningElement {
                     return returnTheme;
                 };
                 mappedThemes[themeGroup.Id] = groupThemes;
-                mappedThemes.getTheme = (inputTheme) => {
+                mappedThemes.getTheme = inputTheme => {
                     let returnTheme = null;
                     for (const themeGroupId in mappedThemes) {
                         if (mappedThemes.hasOwnProperty(themeGroupId)) {
@@ -118,7 +118,7 @@ export default class NksPersonCaseOverview extends LightningElement {
         let groupedCases = {};
         let caseGroups = [];
 
-        cases.forEach((caseItem) => {
+        cases.forEach(caseItem => {
             if (groupedCases.hasOwnProperty(caseItem.themeName)) {
                 groupedCases[caseItem.themeName].push(caseItem);
             } else {
@@ -146,7 +146,7 @@ export default class NksPersonCaseOverview extends LightningElement {
 
     setSelectedNavCase(selectedNavCaseId) {
         let caseLists = this.template.querySelectorAll('c-crm-nav-case-list');
-        caseLists.forEach((caseList) => {
+        caseLists.forEach(caseList => {
             caseList.setSelectedNavCase(selectedNavCaseId);
         });
     }
@@ -158,7 +158,7 @@ export default class NksPersonCaseOverview extends LightningElement {
             this.displayedCaseGroups = this.groupedCases;
             return;
         } else {
-            this.displayedCaseGroups = this.groupedCases.filter((caseGroup) => {
+            this.displayedCaseGroups = this.groupedCases.filter(caseGroup => {
                 return this.themeMap[themeGroup].hasTheme(caseGroup.theme) !== null;
             });
         }
@@ -220,7 +220,7 @@ export default class NksPersonCaseOverview extends LightningElement {
             themeGroupSfId = themeCmp.themeGroup;
         } else {
             if (this.themeMap) {
-                Object.keys(this.themeMap).forEach((themeGroupId) => {
+                Object.keys(this.themeMap).forEach(themeGroupId => {
                     if (this.themeMap[themeGroupId].hasOwnProperty('hasTheme')) {
                         if (this.themeMap[themeGroupId].hasTheme(this.selectedCaseTheme) !== null)
                             themeGroupSfId = themeGroupId;

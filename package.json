@@ -11,7 +11,9 @@
         "test:unit:coverage": "sfdx-lwc-jest --coverage",
         "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
-        "postinstall": "node bin/check-version.js"
+        "postinstall": "node bin/check-version.js",
+        "activateMock": "sfdx force:apex:execute -f post-scratch/activateMock.cls",
+        "deactivateMock": "sfdx force:apex:execute -f post-scratch/deactivateMock.cls"
     },
     "engines": {
         "node": ">= 10.13.0",

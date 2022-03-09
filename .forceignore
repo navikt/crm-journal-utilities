@@ -8,6 +8,9 @@
 !unpackagable/profiles/*
 # NOTE!! Do NOT use **/ before
 
+#FIELD RESTRICTION FULES
+**/fieldRestrictionRules/*
+
 
 # standard fields not needed in source control
 # ----------------------------------------------------------------------------------------

@@ -96,7 +96,11 @@ public class CRM_NavSakService {
 
     private static void filterCases(List<SafCaseWrapper> navCases) {
         for (Integer i = navCases.size() - 1; i >= 0; i--) {
-            if (navCases[i].sakstype.equalsIgnoreCase('GENERELL_SAK') || String.isBlank(navCases[i].fagsakId)) {
+            if (
+                navCases[i].sakstype.equalsIgnoreCase('GENERELL_SAK') ||
+                String.isBlank(navCases[i].fagsakId) ||
+                navCases[i].tema == 'BID'
+            ) {
                 //If the case is GENERELL_SAK or has no id, remove from result
                 navCases.remove(i);
             } else {
