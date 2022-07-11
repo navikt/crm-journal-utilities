@@ -7,6 +7,13 @@ public class CRM_ThemeUtils {
      **/
     @AuraEnabled(Cacheable=true)
     public static Categories getCategorization() {
+        return getCategorizationByThemeSet('ARCHIVE_THEMES');
+    }
+
+    @AuraEnabled(Cacheable=true)
+    public static Categories getCategorizationByThemeSet(String themeSet) {
+        System.debug('GETTING THEMES');
+        Boolean onlyArchiveThemes = themeSet.equalsIgnoreCase('ARCHIVE_THEMES');
         List<Common_Code__c> themeGroups = [
             SELECT Id, Name, CRM_Code__c, CRM_Code_Set__c
             FROM Common_Code__c
@@ -37,7 +44,7 @@ public class CRM_ThemeUtils {
                     ORDER BY CRM_Display_Name__c
                 )
             FROM Common_Code__c
-            WHERE CRM_Code_set__c = 'Tema' AND CRM_Active__c = TRUE AND CRM_Archive_Theme__c = TRUE
+            WHERE CRM_Code_set__c = 'Tema' AND CRM_Active__c = TRUE AND CRM_Archive_Theme__c = :onlyArchiveThemes
             ORDER BY Name
         ];
 

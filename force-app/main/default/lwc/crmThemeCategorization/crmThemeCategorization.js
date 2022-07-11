@@ -1,6 +1,6 @@
 import { LightningElement, track, api, wire } from 'lwc';
 import crmSingleValueUpdate from '@salesforce/messageChannel/crmSingleValueUpdate__c';
-import getCategorization from '@salesforce/apex/CRM_ThemeUtils.getCategorization';
+import getCategorization from '@salesforce/apex/CRM_ThemeUtils.getCategorizationByThemeSet';
 
 import { publish, MessageContext } from 'lightning/messageService';
 
@@ -20,11 +20,12 @@ export default class CRMThemeCategorization extends LightningElement {
     gjelderList;
     themes;
     @api paddingBottom;
+    @api themeSet = 'ARCHIVE_THEMES'; //Allow defining if the resulting themes should be restricted to only archive themes or not
 
     @wire(MessageContext)
     messageContext;
 
-    @wire(getCategorization, {})
+    @wire(getCategorization, { themeSet: '$themeSet' })
     categoryResults({ data, error }) {
         if (data) {
             this.categories = data;
