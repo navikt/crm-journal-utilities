@@ -20,7 +20,7 @@ public class CRM_ThemeUtils {
             ORDER BY Name
         ];
         String query = 'SELECT Id, Name, CRM_Code__c, CRM_Code_Set__c, CRM_Parent_Code__r.CRM_Code__c, (SELECT Id, Name, CRM_Display_Name__c, CRM_Code__c, CRM_Code_Set__c, CRM_Parent_Code__r.CRM_Code__c, CRM_Subtheme__c, CRM_Subtheme_Code__c, CRM_Subtype__c, CRM_Subtype_Code__c FROM Child_Codes__r WHERE CRM_Code_Set__c = \'Gjelder\' AND CRM_Active__c = TRUE ORDER BY CRM_Display_Name__c) FROM Common_Code__c WHERE CRM_Code_set__c = \'Tema\' AND CRM_Active__c = TRUE ';
-        query += onlyArchiveThemes ? 'AND CRM_Archive_Theme__c = TRUE ORDER BY NAME' :  'ORDER BY NAME';
+        query += onlyArchiveThemes ? 'AND CRM_Archive_Theme__c = TRUE ORDER BY NAME' : 'ORDER BY NAME';
         List<Common_Code__c> themeWithGjelder = Database.query(query);
 
         Map<String, List<Common_Code__c>> themeMap = new Map<String, List<Common_Code__c>>();
