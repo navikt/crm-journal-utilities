@@ -39,7 +39,7 @@
         {
             "attributes": {
                 "type": "Common_Code__c",
-                "referenceId": "BARRef"
+                "referenceId": "BIDRef"
             },
             "Name": "Bidrag",
             "CRM_Code__c": "BID",

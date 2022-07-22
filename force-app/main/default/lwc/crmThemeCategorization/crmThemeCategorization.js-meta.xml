@@ -13,20 +13,9 @@
             <property name="theme" type="String" label="Theme: (Salesforce ID)" />
             <property name="subtheme" type="String" label="Subtheme: (Salesforce ID)" />
             <property name="subtype" type="String" label="Subtype: (Salesforce ID)" />
-            <property
-                name="paddingBottom"
-                type="Boolean"
-                label="Add padding to the bottom"
-                default="false"
-                role="inputOnly"
-            />
-
-            <property
-                name="themeGroupCode"
-                type="String"
-                label="Output theme group code from kodeverk"
-                role="outputOnly"
-            />
+            <property name="paddingBottom" type="Boolean" label="Add padding to the bottom" default="false" role="inputOnly" />
+            <property name="themeSet" type="String" label="Theme set" description="Choose ALL or ARCHIVE_THEMES" default="ARCHIVE_THEMES" role="inputOnly" />
+            <property name="themeGroupCode" type="String" label="Output theme group code from kodeverk" role="outputOnly" />
             <property name="themeCode" type="String" label="Output theme code from kodeverk" role="outputOnly" />
             <property name="subthemeCode" type="String" label="Output subtheme code from kodeverk" role="outputOnly" />
             <property name="subtypeCode" type="String" label="Output subtype code from kodeverk" role="outputOnly" />
