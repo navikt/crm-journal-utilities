@@ -1,0 +1,52 @@
+<template>
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+            <div class="slds-combobox_container">
+                <lightning-layout multiple-rows="true">
+                    <lightning-layout-item size="12">
+                        <div class="slds-combobox__form-element" role="none">
+                            <lightning-input
+                                name="enter-search"
+                                label="Search when user hits the 'enter' key"
+                                type="search"
+                                placeholder=""
+                                onblur={handleFocusLeave}
+                                onchange={handleChange}
+                                onkeyup={handleKeyPress}
+                                onfocus={handleFocus}
+                            ></lightning-input>
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12">
+                        <div
+                            if:true={showSearchResults}
+                            id="listbox-id-1"
+                            class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid"
+                            role="listbox"
+                        >
+                            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                <template for:each={searchResults} for:item="searchResult">
+                                    <li role="presentation" key={searchResult} class="slds-listbox__item">
+                                        <div
+                                            class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                                            role="option"
+                                            onclick={selectOption}
+                                            data-label={searchResult.label}
+                                            data-value={searchResult}
+                                        >
+                                            <span class="slds-media__body">
+                                                <span class="slds-listbox__option-text slds-listbox__option-text_entity"
+                                                    >{searchResult.label}</span
+                                                >
+                                            </span>
+                                        </div>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </div>
+    </div>
+</template>
