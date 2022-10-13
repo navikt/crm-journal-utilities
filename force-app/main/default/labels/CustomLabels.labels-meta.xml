@@ -6,7 +6,31 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Journal Case List Col Case Id</shortDescription>
-        <value>Saks-id</value>
+        <value>Case ID</value>
+    </labels>
+    <labels>
+        <fullName>CRM_Theme_Categorization_Theme_Group</fullName>
+        <categories>UI, NKS, Journal</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Theme Group Label</shortDescription>
+        <value>Theme Group</value>
+    </labels>
+    <labels>
+        <fullName>CRM_Theme_Categorization_Theme</fullName>
+        <categories>UI, NKS, Journal</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Theme Label</shortDescription>
+        <value>Theme</value>
+    </labels>
+    <labels>
+        <fullName>CRM_Theme_Categorization_Subtheme</fullName>
+        <categories>UI, NKS, Journal</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Subtheme label</shortDescription>
+        <value>Subtheme</value>
     </labels>
     <labels>
         <fullName>CRM_Journal_Case_List_Col_Created_Date</fullName>
@@ -14,7 +38,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Journal Case List Col Created Date</shortDescription>
-        <value>Opprettet dato</value>
+        <value>Created Date</value>
     </labels>
     <labels>
         <fullName>CRM_Journal_Case_List_No_Cases_Error</fullName>
@@ -22,7 +46,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Journal Case List No Cases Error</shortDescription>
-        <value>Ingen saker registrert på bruker.</value>
+        <value>No cases registered for user.</value>
     </labels>
     <labels>
         <fullName>CRM_NAV_Case_Retrieve_Error</fullName>
@@ -30,7 +54,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>NAV Case Retrieve Error</shortDescription>
-        <value>Det oppsto en feil ved uthenting av brukerens saker.</value>
+        <value>Unexpected error when retrieving cases.</value>
     </labels>
     <labels>
         <fullName>CRM_NAV_Case_Title</fullName>
@@ -38,7 +62,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>NAV Case Title</shortDescription>
-        <value>Saker</value>
+        <value>Cases</value>
     </labels>
     <labels>
         <fullName>CRM_NAV_Case_Validation_Error</fullName>
@@ -46,7 +70,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>NAV Case Validation Error</shortDescription>
-        <value>Du må velge en sak å journalføre på.</value>
+        <value>Please select a case for journalling</value>
     </labels>
     <labels>
         <fullName>CRM_No_Cases_for_Selected_Theme_Group</fullName>
@@ -54,7 +78,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>No Cases for Selected Theme Group</shortDescription>
-        <value>Ingen saker for valgt temagruppe.</value>
+        <value>No cases for selected theme group.</value>
     </labels>
     <labels>
         <fullName>CRM_Theme_Categorization_Validation_Error</fullName>
@@ -62,6 +86,6 @@
         <language>no</language>
         <protected>false</protected>
         <shortDescription>Theme Categorization Validation Error</shortDescription>
-        <value>Vennligst fullfør kategoriseringen.</value>
+        <value>Please complete the categorization.</value>
     </labels>
 </CustomLabels>

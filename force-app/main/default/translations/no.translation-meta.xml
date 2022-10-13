@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Translations xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customApplications>
+        <label><!-- JOURNAL UTILITIES --></label>
+        <name>JOURNAL_UTILITIES</name>
+    </customApplications>
+    <customLabels>
+        <label>Saks-id</label>
+        <name>CRM_Journal_Case_List_Col_Case_Id</name>
+    </customLabels>
+    <customLabels>
+        <label>Opprettet dato</label>
+        <name>CRM_Journal_Case_List_Col_Created_Date</name>
+    </customLabels>
+    <customLabels>
+        <label>Ingen saker registrert på bruker.</label>
+        <name>CRM_Journal_Case_List_No_Cases_Error</name>
+    </customLabels>
+    <customLabels>
+        <label>Det oppsto en feil ved uthenting av brukerens saker.</label>
+        <name>CRM_NAV_Case_Retrieve_Error</name>
+    </customLabels>
+    <customLabels>
+        <label>Saker</label>
+        <name>CRM_NAV_Case_Title</name>
+    </customLabels>
+    <customLabels>
+        <label>Du må velge en sak å journalføre på.</label>
+        <name>CRM_NAV_Case_Validation_Error</name>
+    </customLabels>
+    <customLabels>
+        <label>Ingen saker for valgt temagruppe.</label>
+        <name>CRM_No_Cases_for_Selected_Theme_Group</name>
+    </customLabels>
+    <customLabels>
+        <label>Gjelder</label>
+        <name>CRM_Theme_Categorization_Subtheme</name>
+    </customLabels>
+    <customLabels>
+        <label>Tema</label>
+        <name>CRM_Theme_Categorization_Theme</name>
+    </customLabels>
+    <customLabels>
+        <label>Temagruppe</label>
+        <name>CRM_Theme_Categorization_Theme_Group</name>
+    </customLabels>
+    <customLabels>
+        <label>Vennligst fullfør kategoriseringen.</label>
+        <name>CRM_Theme_Categorization_Validation_Error</name>
+    </customLabels>
+</Translations>
