@@ -20,6 +20,7 @@ export default class CRMThemeCategorization extends LightningElement {
     gjelderList;
     themes;
     @api paddingBottom;
+    @api optionalTheme = false;
     @api themeSet = 'ARCHIVE_THEMES'; //Allow defining if the resulting themes should be restricted to only archive themes or not
 
     @wire(MessageContext)
@@ -256,8 +257,15 @@ export default class CRMThemeCategorization extends LightningElement {
         return this.paddingBottom ? 'wrapper' : '';
     }
 
+    get requireTheme() {
+        return !this.optionalTheme;
+    }
+
     filterThemes() {
         let returnThemes = [];
+        if (this.optionalTheme === true) {
+            returnThemes.push({ label: '(Ikke valgt)', value: '' });
+        }
         //If the task already has a theme defined but no theme group
         if (this.chosenTheme && !this.chosenThemeGroup) {
             for (const key in this.themeMap) {
@@ -341,7 +349,7 @@ export default class CRMThemeCategorization extends LightningElement {
     @api
     validate() {
         //Theme and theme group must be set
-        if (this.themeGroup && this.theme) {
+        if (this.themeGroup && (this.theme || this.optionalTheme)) {
             return { isValid: true };
         } else {
             return {
