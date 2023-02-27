@@ -48,7 +48,7 @@ export default class CRMThemeCategorization extends LightningElement {
 
             // This logic checks if there are any given subthemes and subtypes,
             // and finds the correct gjelder relation for the combination
-            if (this.chosenTheme) {
+            if (this.chosenTheme && this.subthemeVisible) {
                 this.filterGjelder();
                 if (this.chosenSubtheme || this.chosenSubtype) {
                     this.chosenGjelder = '';
@@ -91,9 +91,9 @@ export default class CRMThemeCategorization extends LightningElement {
         this.chosenGjelder = null;
         this.chosenSubtheme = null;
         this.chosenSubtype = null;
-
-        this.filterGjelder();
-
+        if( this.subthemeVisible) {
+            this.filterGjelder();
+        }
         this.publishFieldChange('themeCode', this.themeCode);
     }
 
@@ -179,7 +179,7 @@ export default class CRMThemeCategorization extends LightningElement {
         let subthemeCode = '';
 
         //Added subtheme check as flow was failing when chosing themes with no subthemes
-        if (this.chosenGjelder) {
+        if (this.chosenGjelder  && this.subthemeVisible) {
             let validGjelder =
                 this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
                     ? this.gjelderMap[this.theme]
@@ -198,7 +198,7 @@ export default class CRMThemeCategorization extends LightningElement {
     @api
     get subtypeCode() {
         let subtypeCode = '';
-        if (this.chosenGjelder) {
+        if (this.chosenGjelder && this.subthemeVisible) {
             let validGjelder =
                 this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
                     ? this.gjelderMap[this.theme]
@@ -219,7 +219,7 @@ export default class CRMThemeCategorization extends LightningElement {
         let subthemeId = '';
 
         //Added subtheme check as flow was failing when chosing themes with no subthemes
-        if (this.chosenGjelder) {
+        if (this.chosenGjelder  && this.subthemeVisible) {
             let validGjelder =
                 this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
                     ? this.gjelderMap[this.theme]
@@ -238,7 +238,7 @@ export default class CRMThemeCategorization extends LightningElement {
     @api
     get subtypeId() {
         let subtypeId = '';
-        if (this.chosenGjelder) {
+        if (this.chosenGjelder  && this.subthemeVisible) {
             let validGjelder =
                 this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
                     ? this.gjelderMap[this.theme]
