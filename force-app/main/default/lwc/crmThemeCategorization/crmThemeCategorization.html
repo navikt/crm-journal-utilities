@@ -1,6 +1,7 @@
 <template>
     <div class={wrapperClass}>
         <lightning-combobox
+            if:true={themeGruopVisible}
             name="ThemeGroup"
             label="Temagruppe"
             options={themeGroups}
@@ -24,6 +25,7 @@
         >
         </lightning-combobox>
         <lightning-combobox
+            if:true={subthemeVisible}
             name="Gjelder"
             label="Gjelder"
             placeholder={gjelderPlaceholder}

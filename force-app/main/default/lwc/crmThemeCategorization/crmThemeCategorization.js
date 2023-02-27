@@ -22,6 +22,7 @@ export default class CRMThemeCategorization extends LightningElement {
     @api paddingBottom;
     @api optionalTheme = false;
     @api themeSet = 'ARCHIVE_THEMES'; //Allow defining if the resulting themes should be restricted to only archive themes or not
+    @api variant = 'DEFAULT'; // HIDE_THEME_GROUP, HIDE_SUBTHEME, HIDE_THEME_GROUP_AND_SUBTHEME
 
     @wire(MessageContext)
     messageContext;
@@ -339,6 +340,15 @@ export default class CRMThemeCategorization extends LightningElement {
                 (Object.keys(this.gjelderMap).length === 0 || !(this.chosenTheme in this.gjelderMap)));
         return disabled;
     }
+
+    get themeGruopVisible() {
+        return this.variant === 'HIDE_THEME_GRUOP' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME' ? false : true; 
+    }
+
+    get subthemeVisible() {
+        return this.variant === 'HIDE_SUBTHEME' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME' ? false : true;  
+    }
+
 
     publishFieldChange(field, value) {
         const payload = { name: field, value: value };
