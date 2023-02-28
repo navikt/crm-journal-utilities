@@ -147,6 +147,7 @@ export default class CRMThemeCategorization extends LightningElement {
         let themeCode = '';
         let themes = [];
         if(!this.themeGruopVisible){
+            // if theme groups are hidden, then look for code in all themes
             Object.values(this.themeMap).forEach(
                 (values) => {
                     themes = [...themes, ...values];
@@ -154,6 +155,7 @@ export default class CRMThemeCategorization extends LightningElement {
             );
         }
         else if(this.themeGroup && this.themeMap && this.themeMap.hasOwnProperty(this.themeGroup)){
+            // if theme group provided , then look for code in related themes
             themes = [...this.themeMap[this.themeGroup]];
         }
 
@@ -266,7 +268,7 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     get requireTheme() {
-        return !this.optionalTheme;
+        return !this.optionalTheme || !this.themeGruopVisible;
     }
 
     filterThemes() {
@@ -292,6 +294,8 @@ export default class CRMThemeCategorization extends LightningElement {
             this.themes = returnThemes;
         } else {
             let listThemes = [];
+            // if theme groups are hidden, just add all themes
+            // else only related themes
             if(!this.themeGruopVisible && this.themeMap){
                 Object.values(this.themeMap).forEach(
                     (values) => {
@@ -299,8 +303,7 @@ export default class CRMThemeCategorization extends LightningElement {
                     }
                 );
 
-            }    
-            else if(this.themeGroup && this.themeMap && this.themeGroup in this.themeMap ){
+            } else if (this.themeGroup && this.themeMap && this.themeGroup in this.themeMap ){
                 listThemes = [...this.themeMap[this.themeGroup]];
             }
             listThemes.forEach((theme) => {
