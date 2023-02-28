@@ -41,7 +41,7 @@ export default class CRMThemeCategorization extends LightningElement {
             this.gjelderMap = data.gjelderMap;
 
             if (this.chosenThemeGroup || this.chosenTheme) {
-                if (this.themeGroupCode != '') this.publishFieldChange('themeGroupCode', this.themeGroupCode);
+                if (this.themeGroupCode != '' && this.themeGruopVisible) this.publishFieldChange('themeGroupCode', this.themeGroupCode);
                 if (this.themeCode != '') this.publishFieldChange('themeCode', this.themeCode);
                 this.filterThemes();
             }
@@ -91,7 +91,7 @@ export default class CRMThemeCategorization extends LightningElement {
         this.chosenGjelder = null;
         this.chosenSubtheme = null;
         this.chosenSubtype = null;
-        if( this.subthemeVisible) {
+        if(this.subthemeVisible) {
             this.filterGjelder();
         }
         this.publishFieldChange('themeCode', this.themeCode);
@@ -145,10 +145,17 @@ export default class CRMThemeCategorization extends LightningElement {
     @api
     get themeCode() {
         let themeCode = '';
-        let themes =
-            this.themeGroup && this.themeMap && this.themeMap.hasOwnProperty(this.themeGroup)
-                ? this.themeMap[this.themeGroup]
-                : [];
+        let themes = [];
+        if(!this.themeGruopVisible){
+            Object.values(this.themeMap).forEach(
+                (values) => {
+                    themes = [...themes, ...values];
+                }
+            );
+        }
+        else if(this.themeGroup && this.themeMap && this.themeMap.hasOwnProperty(this.themeGroup)){
+            themes = [...this.themeMap[this.themeGroup]];
+        }
 
         for (let theme of themes) {
             if (theme.Id === this.theme) {
@@ -268,7 +275,7 @@ export default class CRMThemeCategorization extends LightningElement {
             returnThemes.push({ label: '(Ikke valgt)', value: '' });
         }
         //If the task already has a theme defined but no theme group
-        if (this.chosenTheme && !this.chosenThemeGroup) {
+        if (this.chosenTheme && !this.chosenThemeGroup && this.themeGruopVisible) {
             for (const key in this.themeMap) {
                 if (this.themeMap.hasOwnProperty(key)) {
                     this.themeMap[key].forEach((theme) => {
@@ -284,10 +291,18 @@ export default class CRMThemeCategorization extends LightningElement {
             }
             this.themes = returnThemes;
         } else {
-            let listThemes =
-                this.themeGroup && this.themeMap && this.themeGroup in this.themeMap
-                    ? this.themeMap[this.themeGroup]
-                    : [];
+            let listThemes = [];
+            if(!this.themeGruopVisible && this.themeMap){
+                Object.values(this.themeMap).forEach(
+                    (values) => {
+                        listThemes = [...listThemes, ...values];
+                    }
+                );
+
+            }    
+            else if(this.themeGroup && this.themeMap && this.themeGroup in this.themeMap ){
+                listThemes = [...this.themeMap[this.themeGroup]];
+            }
             listThemes.forEach((theme) => {
                 returnThemes.push({ label: theme.Name, value: theme.Id });
             });
@@ -342,7 +357,7 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     get themeGruopVisible() {
-        return this.variant === 'HIDE_THEME_GRUOP' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME' ? false : true; 
+        return this.variant === 'HIDE_THEME_GROUP' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME' ? false : true; 
     }
 
     get subthemeVisible() {
@@ -359,7 +374,7 @@ export default class CRMThemeCategorization extends LightningElement {
     @api
     validate() {
         //Theme and theme group must be set
-        if (this.themeGroup && (this.theme || this.optionalTheme)) {
+        if ((this.themeGruopVisible && this.theme) || (this.themeGroup && (this.theme || this.optionalTheme))) {
             return { isValid: true };
         } else {
             return {
