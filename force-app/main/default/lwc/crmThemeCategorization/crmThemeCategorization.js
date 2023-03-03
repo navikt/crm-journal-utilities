@@ -74,6 +74,14 @@ export default class CRMThemeCategorization extends LightningElement {
         }
     }
 
+    hasRendered = false;
+    renderedCallback() {
+        if (this.hasRendered === false) {
+            this.template.querySelectorAll('lightning-combobox')[0].focus();
+            this.hasRendered = true;
+        }
+    }
+
     handleThemeGroupChange(event) {
         this.chosenThemeGroup = event.detail.value;
         this.chosenTheme = null;
