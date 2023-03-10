@@ -41,10 +41,10 @@ export default class CRMThemeCategorization extends LightningElement {
             this.gjelderMap = data.gjelderMap;
 
             if (this.chosenThemeGroup || this.chosenTheme) {
-                if (this.themeGroupCode != '' && this.themeGruopVisible) this.publishFieldChange('themeGroupCode', this.themeGroupCode);
+                if (this.themeGroupCode != '' && this.themeGroupVisible) this.publishFieldChange('themeGroupCode', this.themeGroupCode);
                 if (this.themeCode != '') this.publishFieldChange('themeCode', this.themeCode);
                 this.filterThemes();
-            } else if (!this.themeGruopVisible){
+            } else if (!this.themeGroupVisible){
                 this.filterThemes();
             }
 
@@ -148,7 +148,7 @@ export default class CRMThemeCategorization extends LightningElement {
     get themeCode() {
         let themeCode = '';
         let themes = [];
-        if(!this.themeGruopVisible){
+        if(!this.themeGroupVisible){
             // if theme groups are hidden, then look for code in all themes
             Object.values(this.themeMap).forEach(
                 (values) => {
@@ -270,7 +270,7 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     get requireTheme() {
-        return !this.optionalTheme || !this.themeGruopVisible;
+        return !this.optionalTheme || !this.themeGroupVisible;
     }
 
     filterThemes() {
@@ -279,7 +279,7 @@ export default class CRMThemeCategorization extends LightningElement {
             returnThemes.push({ label: '(Ikke valgt)', value: '' });
         }
         //If the task already has a theme defined but no theme group
-        if (this.chosenTheme && !this.chosenThemeGroup && this.themeGruopVisible) {
+        if (this.chosenTheme && !this.chosenThemeGroup && this.themeGroupVisible) {
             for (const key in this.themeMap) {
                 if (this.themeMap.hasOwnProperty(key)) {
                     this.themeMap[key].forEach((theme) => {
@@ -298,7 +298,7 @@ export default class CRMThemeCategorization extends LightningElement {
             let listThemes = [];
             // if theme groups are hidden, just add all themes
             // else only related themes
-            if(!this.themeGruopVisible && this.themeMap){
+            if(!this.themeGroupVisible && this.themeMap){
                 Object.values(this.themeMap).forEach(
                     (values) => {
                         listThemes = [...listThemes, ...values];
@@ -353,7 +353,7 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     get themeDisabled() {
-        return (!this.chosenThemeGroup && this.themeGruopVisible);
+        return (!this.chosenThemeGroup && this.themeGroupVisible);
     }
 
     get gjelderDisabled() {
@@ -365,7 +365,7 @@ export default class CRMThemeCategorization extends LightningElement {
         return disabled;
     }
 
-    get themeGruopVisible() {
+    get themeGroupVisible() {
         return !(this.variant === 'HIDE_THEME_GROUP' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME'); 
     }
 
@@ -383,7 +383,7 @@ export default class CRMThemeCategorization extends LightningElement {
     @api
     validate() {
         //Theme and theme group must be set
-        if ((!this.themeGruopVisible && this.theme) || (this.themeGroup && (this.theme || !this.requireTheme))) {
+        if ((!this.themeGroupVisible && this.theme) || (this.themeGroup && (this.theme || !this.requireTheme))) {
             return { isValid: true };
         } else {
             return {
