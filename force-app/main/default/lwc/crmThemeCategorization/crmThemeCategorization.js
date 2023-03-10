@@ -353,7 +353,7 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     get themeDisabled() {
-        return (!this.chosenThemeGroup && this.themeGruopVisible)  ? true : false;
+        return (!this.chosenThemeGroup && this.themeGruopVisible);
     }
 
     get gjelderDisabled() {
