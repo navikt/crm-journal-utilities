@@ -366,11 +366,11 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     get themeGruopVisible() {
-        return this.variant === 'HIDE_THEME_GROUP' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME' ? false : true; 
+        return !(this.variant === 'HIDE_THEME_GROUP' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME'); 
     }
 
     get subthemeVisible() {
-        return this.variant === 'HIDE_SUBTHEME' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME' ? false : true;  
+        return !(this.variant === 'HIDE_SUBTHEME' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME');  
     }
 
 
