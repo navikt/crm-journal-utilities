@@ -44,6 +44,8 @@ export default class CRMThemeCategorization extends LightningElement {
                 if (this.themeGroupCode != '' && this.themeGruopVisible) this.publishFieldChange('themeGroupCode', this.themeGroupCode);
                 if (this.themeCode != '') this.publishFieldChange('themeCode', this.themeCode);
                 this.filterThemes();
+            } else if (!this.themeGruopVisible){
+                this.filterThemes();
             }
 
             // This logic checks if there are any given subthemes and subtypes,
@@ -273,7 +275,7 @@ export default class CRMThemeCategorization extends LightningElement {
 
     filterThemes() {
         let returnThemes = [];
-        if (this.optionalTheme === true) {
+        if (!this.requireTheme) {
             returnThemes.push({ label: '(Ikke valgt)', value: '' });
         }
         //If the task already has a theme defined but no theme group
@@ -281,7 +283,7 @@ export default class CRMThemeCategorization extends LightningElement {
             for (const key in this.themeMap) {
                 if (this.themeMap.hasOwnProperty(key)) {
                     this.themeMap[key].forEach((theme) => {
-                        if (theme.Id == this.theme) {
+                        if (theme.Id === this.theme) {
                             returnThemes.push({
                                 label: theme.Name,
                                 value: theme.Id
@@ -306,9 +308,13 @@ export default class CRMThemeCategorization extends LightningElement {
             } else if (this.themeGroup && this.themeMap && this.themeGroup in this.themeMap ){
                 listThemes = [...this.themeMap[this.themeGroup]];
             }
-            listThemes.forEach((theme) => {
-                returnThemes.push({ label: theme.Name, value: theme.Id });
-            });
+            listThemes.filter(
+                (theme) => theme.CRM_Available__c === true
+            ).forEach(
+                (theme) => {
+                    returnThemes.push({ label: theme.Name, value: theme.Id });
+                }
+            );
             this.themes = returnThemes;
         }
     }
@@ -347,7 +353,7 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     get themeDisabled() {
-        return !this.chosenThemeGroup ? true : false;
+        return (!this.chosenThemeGroup && this.themeGruopVisible)  ? true : false;
     }
 
     get gjelderDisabled() {
@@ -377,7 +383,7 @@ export default class CRMThemeCategorization extends LightningElement {
     @api
     validate() {
         //Theme and theme group must be set
-        if ((this.themeGruopVisible && this.theme) || (this.themeGroup && (this.theme || this.optionalTheme))) {
+        if ((!this.themeGruopVisible && this.theme) || (this.themeGroup && (this.theme || !this.requireTheme))) {
             return { isValid: true };
         } else {
             return {
