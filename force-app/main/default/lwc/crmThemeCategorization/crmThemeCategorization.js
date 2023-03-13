@@ -22,6 +22,7 @@ export default class CRMThemeCategorization extends LightningElement {
     @api paddingBottom;
     @api optionalTheme = false;
     @api themeSet = 'ARCHIVE_THEMES'; //Allow defining if the resulting themes should be restricted to only archive themes or not
+    @api variant = 'DEFAULT'; // HIDE_THEME_GROUP, HIDE_SUBTHEME, HIDE_THEME_GROUP_AND_SUBTHEME
 
     @wire(MessageContext)
     messageContext;
@@ -40,14 +41,16 @@ export default class CRMThemeCategorization extends LightningElement {
             this.gjelderMap = data.gjelderMap;
 
             if (this.chosenThemeGroup || this.chosenTheme) {
-                if (this.themeGroupCode != '') this.publishFieldChange('themeGroupCode', this.themeGroupCode);
+                if (this.themeGroupCode != '' && this.themeGroupVisible) this.publishFieldChange('themeGroupCode', this.themeGroupCode);
                 if (this.themeCode != '') this.publishFieldChange('themeCode', this.themeCode);
+                this.filterThemes();
+            } else if (!this.themeGroupVisible){
                 this.filterThemes();
             }
 
             // This logic checks if there are any given subthemes and subtypes,
             // and finds the correct gjelder relation for the combination
-            if (this.chosenTheme) {
+            if (this.chosenTheme && this.subthemeVisible) {
                 this.filterGjelder();
                 if (this.chosenSubtheme || this.chosenSubtype) {
                     this.chosenGjelder = '';
@@ -98,9 +101,9 @@ export default class CRMThemeCategorization extends LightningElement {
         this.chosenGjelder = null;
         this.chosenSubtheme = null;
         this.chosenSubtype = null;
-
-        this.filterGjelder();
-
+        if(this.subthemeVisible) {
+            this.filterGjelder();
+        }
         this.publishFieldChange('themeCode', this.themeCode);
     }
 
@@ -152,10 +155,19 @@ export default class CRMThemeCategorization extends LightningElement {
     @api
     get themeCode() {
         let themeCode = '';
-        let themes =
-            this.themeGroup && this.themeMap && this.themeMap.hasOwnProperty(this.themeGroup)
-                ? this.themeMap[this.themeGroup]
-                : [];
+        let themes = [];
+        if(!this.themeGroupVisible){
+            // if theme groups are hidden, then look for code in all themes
+            Object.values(this.themeMap).forEach(
+                (values) => {
+                    themes = [...themes, ...values];
+                }
+            );
+        }
+        else if(this.themeGroup && this.themeMap && this.themeMap.hasOwnProperty(this.themeGroup)){
+            // if theme group provided , then look for code in related themes
+            themes = [...this.themeMap[this.themeGroup]];
+        }
 
         for (let theme of themes) {
             if (theme.Id === this.theme) {
@@ -186,7 +198,7 @@ export default class CRMThemeCategorization extends LightningElement {
         let subthemeCode = '';
 
         //Added subtheme check as flow was failing when chosing themes with no subthemes
-        if (this.chosenGjelder) {
+        if (this.chosenGjelder  && this.subthemeVisible) {
             let validGjelder =
                 this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
                     ? this.gjelderMap[this.theme]
@@ -205,7 +217,7 @@ export default class CRMThemeCategorization extends LightningElement {
     @api
     get subtypeCode() {
         let subtypeCode = '';
-        if (this.chosenGjelder) {
+        if (this.chosenGjelder && this.subthemeVisible) {
             let validGjelder =
                 this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
                     ? this.gjelderMap[this.theme]
@@ -226,7 +238,7 @@ export default class CRMThemeCategorization extends LightningElement {
         let subthemeId = '';
 
         //Added subtheme check as flow was failing when chosing themes with no subthemes
-        if (this.chosenGjelder) {
+        if (this.chosenGjelder  && this.subthemeVisible) {
             let validGjelder =
                 this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
                     ? this.gjelderMap[this.theme]
@@ -245,7 +257,7 @@ export default class CRMThemeCategorization extends LightningElement {
     @api
     get subtypeId() {
         let subtypeId = '';
-        if (this.chosenGjelder) {
+        if (this.chosenGjelder  && this.subthemeVisible) {
             let validGjelder =
                 this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
                     ? this.gjelderMap[this.theme]
@@ -266,20 +278,20 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     get requireTheme() {
-        return !this.optionalTheme;
+        return !this.optionalTheme || !this.themeGroupVisible;
     }
 
     filterThemes() {
         let returnThemes = [];
-        if (this.optionalTheme === true) {
+        if (!this.requireTheme) {
             returnThemes.push({ label: '(Ikke valgt)', value: '' });
         }
         //If the task already has a theme defined but no theme group
-        if (this.chosenTheme && !this.chosenThemeGroup) {
+        if (this.chosenTheme && !this.chosenThemeGroup && this.themeGroupVisible) {
             for (const key in this.themeMap) {
                 if (this.themeMap.hasOwnProperty(key)) {
                     this.themeMap[key].forEach((theme) => {
-                        if (theme.Id == this.theme) {
+                        if (theme.Id === this.theme) {
                             returnThemes.push({
                                 label: theme.Name,
                                 value: theme.Id
@@ -291,13 +303,26 @@ export default class CRMThemeCategorization extends LightningElement {
             }
             this.themes = returnThemes;
         } else {
-            let listThemes =
-                this.themeGroup && this.themeMap && this.themeGroup in this.themeMap
-                    ? this.themeMap[this.themeGroup]
-                    : [];
-            listThemes.forEach((theme) => {
-                returnThemes.push({ label: theme.Name, value: theme.Id });
-            });
+            let listThemes = [];
+            // if theme groups are hidden, just add all themes
+            // else only related themes
+            if(!this.themeGroupVisible && this.themeMap){
+                Object.values(this.themeMap).forEach(
+                    (values) => {
+                        listThemes = [...listThemes, ...values];
+                    }
+                );
+
+            } else if (this.themeGroup && this.themeMap && this.themeGroup in this.themeMap ){
+                listThemes = [...this.themeMap[this.themeGroup]];
+            }
+            listThemes.filter(
+                (theme) => theme.CRM_Available__c === true
+            ).forEach(
+                (theme) => {
+                    returnThemes.push({ label: theme.Name, value: theme.Id });
+                }
+            );
             this.themes = returnThemes;
         }
     }
@@ -336,7 +361,7 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     get themeDisabled() {
-        return !this.chosenThemeGroup ? true : false;
+        return (!this.chosenThemeGroup && this.themeGroupVisible);
     }
 
     get gjelderDisabled() {
@@ -348,6 +373,15 @@ export default class CRMThemeCategorization extends LightningElement {
         return disabled;
     }
 
+    get themeGroupVisible() {
+        return !(this.variant === 'HIDE_THEME_GROUP' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME'); 
+    }
+
+    get subthemeVisible() {
+        return !(this.variant === 'HIDE_SUBTHEME' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME');  
+    }
+
+
     publishFieldChange(field, value) {
         const payload = { name: field, value: value };
         publish(this.messageContext, crmSingleValueUpdate, payload);
@@ -357,7 +391,7 @@ export default class CRMThemeCategorization extends LightningElement {
     @api
     validate() {
         //Theme and theme group must be set
-        if (this.themeGroup && (this.theme || this.optionalTheme)) {
+        if ((!this.themeGroupVisible && this.theme) || (this.themeGroup && (this.theme || !this.requireTheme))) {
             return { isValid: true };
         } else {
             return {
