@@ -30,8 +30,8 @@
             <property name="variant" type="String" label="Component variant" default="DEFAULT"
                 description="available variants DEFAULT, HIDE_THEME_GROUP, HIDE_SUBTHEME, HIDE_THEME_GROUP_AND_SUBTHEME"
                 role="inputOnly" />
-            <property name="isCasePhone" type="String" label="Is Case Phone?" default="false"
-                description="If Case is type='Phone'."
+            <property name="autoFocus" type="String" label="Auto focus on theme group"
+                default="false"
                 role="inputOnly" />
         </targetConfig>
     </targetConfigs>
