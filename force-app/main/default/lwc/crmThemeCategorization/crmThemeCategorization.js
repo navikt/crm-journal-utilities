@@ -157,7 +157,7 @@ export default class CRMThemeCategorization extends LightningElement {
     get themeCode() {
         let themeCode = '';
         let themes = [];
-        if(!this.themeGroupVisible){
+        if(!this.themeGroupVisible && this.themeMap){
             // if theme groups are hidden, then look for code in all themes
             Object.values(this.themeMap).forEach(
                 (values) => {
