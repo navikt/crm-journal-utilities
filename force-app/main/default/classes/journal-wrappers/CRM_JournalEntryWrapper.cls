@@ -19,6 +19,8 @@ global class CRM_JournalEntryWrapper {
     public CRM_Sak sak;
     @AuraEnabled
     public List<CRM_Dokumenter> dokumenter;
+    @AuraEnabled
+    public List<CRM_Tilleggsopplysninger> tilleggsopplysninger;
 
     public CRM_JournalEntryWrapper() {
     }

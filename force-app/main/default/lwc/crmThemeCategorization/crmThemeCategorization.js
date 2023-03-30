@@ -23,6 +23,7 @@ export default class CRMThemeCategorization extends LightningElement {
     @api optionalTheme = false;
     @api themeSet = 'ARCHIVE_THEMES'; //Allow defining if the resulting themes should be restricted to only archive themes or not
     @api variant = 'DEFAULT'; // HIDE_THEME_GROUP, HIDE_SUBTHEME, HIDE_THEME_GROUP_AND_SUBTHEME
+    @api autoFocus = false;
 
     @wire(MessageContext)
     messageContext;
@@ -79,7 +80,7 @@ export default class CRMThemeCategorization extends LightningElement {
 
     hasRendered = false;
     renderedCallback() {
-        if (this.hasRendered === false) {
+        if (this.hasRendered === false && this.autoFocus) {
             this.template.querySelectorAll('lightning-combobox')[0].focus();
             this.hasRendered = true;
         }
