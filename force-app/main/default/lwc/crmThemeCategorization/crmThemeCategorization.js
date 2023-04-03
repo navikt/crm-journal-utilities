@@ -324,7 +324,11 @@ export default class CRMThemeCategorization extends LightningElement {
                     returnThemes.push({ label: theme.Name, value: theme.Id });
                 }
             );
-            this.themes = returnThemes;
+            this.themes = returnThemes.sort(
+                (a,b) => {
+                    return a.label.localeCompare(b.label,'nb');
+                }
+            );
         }
     }
 
