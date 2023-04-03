@@ -3,7 +3,7 @@
     <fullName>IPS_Journal_Entry</fullName>
     <active>true</active>
     <description>Journal entries som gjelder IPS/UO</description>
-    <label>TAG Journal Entry</label>
+    <label>IPS Journal Entry</label>
     <picklistValues>
         <picklist>CRM_Journal_Post_Type__c</picklist>
         <values>
