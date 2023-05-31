@@ -70,11 +70,11 @@ export default class NksPersonCaseOverview extends LightningElement {
                     });
                 }
                 //Property function to determine if the group of themes includes an input theme
-                groupThemes.hasTheme = inputTheme => {
+                groupThemes.hasTheme = prefilledThemeGroup => {
                     let returnTheme = null;
                     for (let idx = 0; idx < groupThemes.themes.length; idx++) {
                         const theme = groupThemes.themes[idx];
-                        if (theme.themeCode == inputTheme) {
+                        if (theme.themeCode == prefilledThemeGroup) {
                             returnTheme = theme;
                             break;
                         }
@@ -82,12 +82,12 @@ export default class NksPersonCaseOverview extends LightningElement {
                     return returnTheme;
                 };
                 mappedThemes[themeGroup.Id] = groupThemes;
-                mappedThemes.getTheme = inputTheme => {
+                mappedThemes.getTheme = prefilledThemeGroup => {
                     let returnTheme = null;
                     for (const themeGroupId in mappedThemes) {
                         if (mappedThemes.hasOwnProperty(themeGroupId)) {
                             returnTheme = mappedThemes[themeGroupId].hasOwnProperty('hasTheme')
-                                ? mappedThemes[themeGroupId].hasTheme(inputTheme)
+                                ? mappedThemes[themeGroupId].hasTheme(prefilledThemeGroup)
                                 : null;
                             if (returnTheme !== null) break;
                         }
