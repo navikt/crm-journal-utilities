@@ -1,11 +1,13 @@
 <template>
-    <lightning-layout-item flexibility="shrink" class="slds-var-p-top_small">
+    <!--
+        <lightning-layout-item flexibility="shrink" class="slds-var-p-top_small">
         <c-crm-theme-categorization
                 theme-group={prefilledThemeGroup}
                 padding-bottom={paddingBottom}
                 variant="DEFAULT"
             ></c-crm-theme-categorization>
     </lightning-layout-item>
+-->
     <template if:false={dataLoaded}>
         <lightning-spinner size="medium" alternative-text="Loading" variant="brand"></lightning-spinner>
     </template>
@@ -14,8 +16,8 @@
             <template if:true={showCases}>
                 <template if:true={hasThemeGroupCases} for:each={displayedCaseGroups} for:item="caseGroup">
                     <c-crm-nav-case-list
-                        key={caseGroup.theme}
-                        theme-name={caseGroup.themeName}
+                        key={prefilledThemeGroup}
+                        theme-name={prefilledTheme}
                         cases={caseGroup.cases}
                         oncaseselected={handleCaseSelected}
                     ></c-crm-nav-case-list>
