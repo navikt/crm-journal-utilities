@@ -2,6 +2,8 @@ import { LightningElement, api, wire } from 'lwc';
 import getCases from '@salesforce/apex/CRM_NavSakService.getSafActorCases';
 import getCategorization from '@salesforce/apex/CRM_ThemeUtils.getCategorization';
 import crmSingleValueUpdate from '@salesforce/messageChannel/crmSingleValueUpdate__c';
+import noFilterTemplate from './crmPersonCaseOverview.html';
+import themeTemplate from './crmPersonCaseTheme.html';
 
 import { publish, MessageContext } from 'lightning/messageService';
 
@@ -21,6 +23,8 @@ export default class NksPersonCaseOverview extends LightningElement {
 
     @api actorId;
     @api prefilledThemeGroup; //Give the theme categorization child component a prefilled value
+    @api prefilledTheme; //Set prefilled theme (this is not themegroup but theme)
+    @api viewType;// Set viewType NO_FILTER, THEME .....
     @api FAGSAK_ONLY = false;
     caseList = []; //Contains all NAV cases returned from the API
     displayedCaseGroups = []; //Holds the list of case groups to be displayed
@@ -38,6 +42,18 @@ export default class NksPersonCaseOverview extends LightningElement {
         { label: 'Fagsak', value: 'FAGSAK' },
         { label: 'Generell', value: 'GENERELL_SAK' }
     ];
+
+    get personTemplate(){
+        if(this.viewType === 'THEME'){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    render(){
+        return this.personTemplate ? themeTemplate : noFilterTemplate;
+    }
 
     renderedCallback() {
         this.setSelectedNavCase(this.selectedCaseId);

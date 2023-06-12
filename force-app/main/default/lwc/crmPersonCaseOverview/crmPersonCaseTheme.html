@@ -1,0 +1,22 @@
+<template>
+    <lightning-layout-item flexibility="shrink" class="slds-var-p-top_small">
+        <c-crm-theme-categorization
+                theme-group={prefilledThemeGroup}
+                theme={prefilledTheme}
+                padding-bottom={paddingBottom}
+                variant="HIDE_SUBTHEME"
+            ></c-crm-theme-categorization>
+    </lightning-layout-item>
+    <template if:false={hasCases}>
+        <!--ERROR OCCURRED-->
+        <c-crm-alert-banner
+            if:true={casesLoaded}
+            type="Info"
+            message={labels.NO_CASES_ERROR}
+        ></c-crm-alert-banner>
+    </template>
+    <template if:true={error}>
+        <!--ERROR OCCURRED-->
+        <c-crm-alert-banner type="Error" message={labels.NAV_CASE_RETRIEVE_ERROR}></c-crm-alert-banner>
+    </template>
+</template>
