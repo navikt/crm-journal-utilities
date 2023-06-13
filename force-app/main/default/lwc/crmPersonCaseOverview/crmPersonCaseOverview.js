@@ -135,11 +135,17 @@ export default class NksPersonCaseOverview extends LightningElement {
         let caseGroups = [];
 
         cases.forEach(caseItem => {
-            if (groupedCases.hasOwnProperty(caseItem.themeName)) {
-                groupedCases[caseItem.themeName].push(caseItem);
-            } else {
-                groupedCases[caseItem.themeName] = [];
-                groupedCases[caseItem.themeName].push(caseItem);
+            if(this.prefilledTheme === null){
+                if (groupedCases.hasOwnProperty(caseItem.themeName)) {
+                    groupedCases[caseItem.themeName].push(caseItem);
+                } else {
+                    groupedCases[caseItem.themeName] = [];
+                    groupedCases[caseItem.themeName].push(caseItem);
+                }
+            }else{
+                if (groupedCases(caseItem.tema)=== this.prefilledTheme){
+                    groupedCases[caseItem.themeName].push(caseItem);
+                }
             }
         });
 
@@ -302,10 +308,12 @@ export default class NksPersonCaseOverview extends LightningElement {
     @api
     get selectedSubtype() {
         let subtype;
-        if (this.isGeneralCase === true) {
+        let themeCmp = this.template.querySelector('c-crm-theme-categorization');
+            subtype = themeCmp.subtypeCode;
+        /*if (this.isGeneralCase === true) {
             let themeCmp = this.template.querySelector('c-crm-theme-categorization');
             subtype = themeCmp.subtypeCode;
-        }
+        }*/
         return subtype;
     }
 
