@@ -144,7 +144,7 @@ export default class NksPersonCaseOverview extends LightningElement {
         });
 
         for (const [key, value] of Object.entries(groupedCases)) {
-            if( this.hasTheme === true && themeName === this.prefilledTheme){
+            if( this.hasTheme === true && value[0].tema === this.prefilledTheme){
                 caseGroups.push({ themeName: key, theme: value[0].tema, cases: value });
             }else{
                 caseGroups.push({ themeName: key, theme: value[0].tema, cases: value });
@@ -337,6 +337,8 @@ export default class NksPersonCaseOverview extends LightningElement {
     get hasTheme(){
         if( this.prefilledTheme !== null || this.prefilledTheme !== ''){
             return true;
+        }else{
+            return false;
         }
     }
 
