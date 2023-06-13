@@ -23,8 +23,8 @@ export default class NksPersonCaseOverview extends LightningElement {
 
     @api actorId;
     @api prefilledThemeGroup; //Give the theme categorization child component a prefilled value
-    @api prefilledTheme; //Set prefilled theme (this is not themegroup but theme)
-    @api viewType;// Set viewType NO_FILTER, THEME .....
+    @api prefilledTheme; //Set prefilled theme EX: OPP
+    @api viewType;// Set viewType default value =NO_FILTER
     @api FAGSAK_ONLY = false;
     caseList = []; //Contains all NAV cases returned from the API
     displayedCaseGroups = []; //Holds the list of case groups to be displayed
@@ -121,18 +121,20 @@ export default class NksPersonCaseOverview extends LightningElement {
     wireUser({ error, data }) {
         if (data) {
             let tempCases=[];
-            if(this.prefilledTheme !== null || this.prefilledTheme !== ''){
+            if(this.viewType ==='THEME'){
                 for(var i=0;i<data.length;i++){
                     if(data[i].tema === this.prefilledTheme){
                         tempCases.push(data[i]);
                     }
                 }
                 this.groupCases(tempCases);
+                this.caseList = tempCases;
             }else{
                 this.groupCases(data);
+                this.caseList = data;
             }
             
-            this.caseList = data;
+            //this.caseList = data;
             this.casesLoaded = true;
         }
         if (error) {
