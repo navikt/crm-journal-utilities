@@ -143,7 +143,7 @@ export default class NksPersonCaseOverview extends LightningElement {
                     groupedCases[caseItem.themeName].push(caseItem);
                 }
             }else{
-                if (groupedCases(caseItem.themeName)=== this.prefilledTheme){
+                if (groupedCases[caseItem.themeName]=== this.prefilledTheme){
                     groupedCases[caseItem.themeName].push(caseItem);
                 }else {
                     groupedCases[caseItem.themeName] = [];
