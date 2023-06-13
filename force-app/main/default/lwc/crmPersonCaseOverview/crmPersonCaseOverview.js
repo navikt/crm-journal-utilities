@@ -120,7 +120,7 @@ export default class NksPersonCaseOverview extends LightningElement {
     @wire(getCases, { actorId: '$actorId' })
     wireUser({ error, data }) {
         if (data) {
-            let tempCases;
+            let tempCases=[];
             if(this.prefilledTheme !== null || this.prefilledTheme !== ''){
                 for(var i=0;i<data.length;i++){
                     if(data[i].tema === this.prefilledTheme){

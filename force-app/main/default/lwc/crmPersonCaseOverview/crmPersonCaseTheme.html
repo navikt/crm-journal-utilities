@@ -14,7 +14,7 @@
     <template if:true={dataLoaded}>
         <template if:true={hasCases}>
             <template if:true={showCases}>
-                <template if:true={hasThemeGroupCases} for:each={displayedCaseGroups} for:item="caseGroup">
+                <template if:true={hasTheme} for:each={displayedCaseGroups} for:item="caseGroup">
                     <c-crm-nav-case-list
                         key={caseGroup.theme}
                         theme-name={caseGroup.themeName}
