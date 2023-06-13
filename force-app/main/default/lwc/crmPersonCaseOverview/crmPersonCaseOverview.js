@@ -120,7 +120,18 @@ export default class NksPersonCaseOverview extends LightningElement {
     @wire(getCases, { actorId: '$actorId' })
     wireUser({ error, data }) {
         if (data) {
-            this.groupCases(data);
+            let tempCases;
+            if(this.prefilledTheme !== null || this.prefilledTheme !== ''){
+                for(var i=0;i<data.length;i++){
+                    if(data[i].tema === this.prefilledTheme){
+                        tempCases.push(data[i]);
+                    }
+                }
+                this.groupCases(tempCases);
+            }else{
+                this.groupCases(data);
+            }
+            
             this.caseList = data;
             this.casesLoaded = true;
         }
@@ -144,12 +155,7 @@ export default class NksPersonCaseOverview extends LightningElement {
         });
 
         for (const [key, value] of Object.entries(groupedCases)) {
-            if( this.hasTheme === true && value[0].tema === this.prefilledTheme){
-                caseGroups.push({ themeName: key, theme: value[0].tema, cases: value });
-            }else{
-                caseGroups.push({ themeName: key, theme: value[0].tema, cases: value });
-            }
-            
+            caseGroups.push({ themeName: key, theme: value[0].tema, cases: value });
         }
 
         this.groupedCases = caseGroups;
