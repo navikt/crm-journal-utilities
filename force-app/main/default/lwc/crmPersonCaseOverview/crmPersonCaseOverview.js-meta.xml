@@ -13,7 +13,8 @@
             <property name="actorId" type="String" label="Actor ID:" role="inputOnly" />
             <property name="prefilledThemeGroup" type="String" label="Preselected theme group:"
                 role="inputOnly" />
-            <property name="prefilledTheme" type="String" label="Preselected theme"
+            <property name="prefilledTheme" type="String"
+                label="Preselected theme, use with viewtype = THEME"
                 role="inputOnly" />
             <property name="viewType" type="String" label="Select type: NO_FILTER, THEME"
                 default="NO_FILTER"

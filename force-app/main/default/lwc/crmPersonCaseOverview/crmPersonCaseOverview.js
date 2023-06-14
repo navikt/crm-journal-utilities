@@ -2,6 +2,8 @@ import { LightningElement, api, wire } from 'lwc';
 import getCases from '@salesforce/apex/CRM_NavSakService.getSafActorCases';
 import getCategorization from '@salesforce/apex/CRM_ThemeUtils.getCategorization';
 import crmSingleValueUpdate from '@salesforce/messageChannel/crmSingleValueUpdate__c';
+
+/* 2 different html template */
 import noFilterTemplate from './crmPersonCaseOverview.html';
 import themeTemplate from './crmPersonCaseTheme.html';
 
