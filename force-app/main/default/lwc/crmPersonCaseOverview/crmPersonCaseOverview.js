@@ -3,6 +3,10 @@ import getCases from '@salesforce/apex/CRM_NavSakService.getSafActorCases';
 import getCategorization from '@salesforce/apex/CRM_ThemeUtils.getCategorization';
 import crmSingleValueUpdate from '@salesforce/messageChannel/crmSingleValueUpdate__c';
 
+/* 2 different html template */
+import noFilterTemplate from './crmPersonCaseOverview.html';
+import themeTemplate from './crmPersonCaseTheme.html';
+
 import { publish, MessageContext } from 'lightning/messageService';
 
 //##LABEL IMPORTS
@@ -21,6 +25,8 @@ export default class NksPersonCaseOverview extends LightningElement {
 
     @api actorId;
     @api prefilledThemeGroup; //Give the theme categorization child component a prefilled value
+    @api prefilledTheme; //Set prefilled theme EX: OPP
+    @api viewType;// Set viewType default value =NO_FILTER
     @api FAGSAK_ONLY = false;
     caseList = []; //Contains all NAV cases returned from the API
     displayedCaseGroups = []; //Holds the list of case groups to be displayed
@@ -38,6 +44,18 @@ export default class NksPersonCaseOverview extends LightningElement {
         { label: 'Fagsak', value: 'FAGSAK' },
         { label: 'Generell', value: 'GENERELL_SAK' }
     ];
+
+    get personTemplate(){
+        if(this.viewType === 'THEME'){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    render(){
+        return this.personTemplate ? themeTemplate : noFilterTemplate;
+    }
 
     renderedCallback() {
         this.setSelectedNavCase(this.selectedCaseId);
@@ -104,8 +122,21 @@ export default class NksPersonCaseOverview extends LightningElement {
     @wire(getCases, { actorId: '$actorId' })
     wireUser({ error, data }) {
         if (data) {
-            this.groupCases(data);
-            this.caseList = data;
+            let tempCases=[];
+            if(this.viewType ==='THEME'){
+                for(var i=0;i<data.length;i++){
+                    if(data[i].tema === this.prefilledTheme){
+                        tempCases.push(data[i]);
+                    }
+                }
+                this.groupCases(tempCases);
+                this.caseList = tempCases;
+            }else{
+                this.groupCases(data);
+                this.caseList = data;
+            }
+            
+            //this.caseList = data;
             this.casesLoaded = true;
         }
         if (error) {
@@ -119,12 +150,12 @@ export default class NksPersonCaseOverview extends LightningElement {
         let caseGroups = [];
 
         cases.forEach(caseItem => {
-            if (groupedCases.hasOwnProperty(caseItem.themeName)) {
-                groupedCases[caseItem.themeName].push(caseItem);
-            } else {
-                groupedCases[caseItem.themeName] = [];
-                groupedCases[caseItem.themeName].push(caseItem);
-            }
+                if (groupedCases.hasOwnProperty(caseItem.themeName)) {
+                    groupedCases[caseItem.themeName].push(caseItem);
+                } else {
+                    groupedCases[caseItem.themeName] = [];
+                    groupedCases[caseItem.themeName].push(caseItem);
+                }
         });
 
         for (const [key, value] of Object.entries(groupedCases)) {
@@ -311,6 +342,14 @@ export default class NksPersonCaseOverview extends LightningElement {
 
     get hasThemeGroupCases() {
         return this.displayedCaseGroups.length > 0;
+    }
+
+    get hasTheme(){
+        if( this.prefilledTheme !== null || this.prefilledTheme !== ''){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @api

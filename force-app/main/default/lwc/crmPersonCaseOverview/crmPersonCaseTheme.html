@@ -1,0 +1,37 @@
+<template>
+    <template if:false={dataLoaded}>
+        <lightning-spinner size="medium" alternative-text="Loading" variant="brand"></lightning-spinner>
+    </template>
+    <template if:true={dataLoaded}>
+        <template if:true={hasCases}>
+            <template if:true={showCases}>
+                <template if:true={hasTheme} for:each={displayedCaseGroups} for:item="caseGroup">
+                    <c-crm-nav-case-list
+                        key={caseGroup.theme}
+                        theme-name={caseGroup.themeName}
+                        cases={caseGroup.cases}
+                        oncaseselected={handleCaseSelected}
+                    ></c-crm-nav-case-list>
+                </template>
+                <template if:false={hasThemeGroupCases}>
+                    <c-crm-alert-banner
+                        type="info"
+                        message={labels.NO_CASES_FOR_THEME_GROUP}
+                    ></c-crm-alert-banner>
+                </template>
+            </template>
+        </template>
+        <template if:false={hasCases}>
+            <!--ERROR OCCURRED-->
+            <c-crm-alert-banner
+                if:true={casesLoaded}
+                type="Info"
+                message={labels.NO_CASES_ERROR}
+            ></c-crm-alert-banner>
+        </template>
+        <template if:true={error}>
+            <!--ERROR OCCURRED-->
+            <c-crm-alert-banner type="Error" message={labels.NAV_CASE_RETRIEVE_ERROR}></c-crm-alert-banner>
+        </template>
+    </template>
+</template>
