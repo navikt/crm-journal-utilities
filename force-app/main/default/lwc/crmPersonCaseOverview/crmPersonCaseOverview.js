@@ -48,9 +48,9 @@ export default class NksPersonCaseOverview extends LightningElement {
     get personTemplate(){
         if(this.viewType === 'THEME'){
             return true;
-        }else{
-            return false;
         }
+            return false;
+        
     }
 
     render(){
@@ -187,7 +187,7 @@ export default class NksPersonCaseOverview extends LightningElement {
 
         if (themeGroup === 'ALL') {
             this.displayedCaseGroups = this.groupedCases;
-            return;
+            
         } else {
             this.displayedCaseGroups = this.groupedCases.filter(caseGroup => {
                 return this.themeMap[themeGroup].hasTheme(caseGroup.theme) !== null;
@@ -226,9 +226,9 @@ export default class NksPersonCaseOverview extends LightningElement {
         if (this.isGeneralCase === true) {
             let themeCmp = this.template.querySelector('c-crm-theme-categorization');
             return themeCmp.themeCode;
-        } else {
+        } 
             return this.selectedCase ? this.selectedCase.tema : null;
-        }
+        
     }
 
     @api
@@ -236,10 +236,10 @@ export default class NksPersonCaseOverview extends LightningElement {
         if (this.isGeneralCase === true) {
             let themeCmp = this.template.querySelector('c-crm-theme-categorization');
             return themeCmp.theme;
-        } else {
+        } 
             let returnTheme = this.themeMap ? this.themeMap.getTheme(this.selectedCaseTheme) : null;
             return returnTheme !== null ? returnTheme.themeSfId : null;
-        }
+        
     }
 
     @api
@@ -347,9 +347,9 @@ export default class NksPersonCaseOverview extends LightningElement {
     get hasTheme(){
         if( this.prefilledTheme !== null || this.prefilledTheme !== ''){
             return true;
-        }else{
-            return false;
         }
+            return false;
+        
     }
 
     @api
@@ -360,11 +360,11 @@ export default class NksPersonCaseOverview extends LightningElement {
         } else if (this.isGeneralCase === true) {
             let themeCmp = this.template.querySelector('c-crm-theme-categorization');
             return themeCmp.validate();
-        } else {
+        } 
             return {
                 isValid: false,
                 errorMessage: VALIDATION_ERROR
             };
-        }
+        
     }
 }

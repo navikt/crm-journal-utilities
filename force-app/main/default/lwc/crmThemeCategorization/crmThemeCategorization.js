@@ -398,11 +398,11 @@ export default class CRMThemeCategorization extends LightningElement {
         //Theme and theme group must be set
         if ((!this.themeGroupVisible && this.theme) || (this.themeGroup && (this.theme || !this.requireTheme))) {
             return { isValid: true };
-        } else {
+        } 
             return {
                 isValid: false,
                 errorMessage: VALIDATION_ERROR
             };
-        }
+        
     }
 }
