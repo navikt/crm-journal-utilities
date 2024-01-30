@@ -14,7 +14,7 @@ export default class NksNavCaseList extends LightningElement {
     @api cases;
     @api showCases = false;
 
-    toggleCases(event) {
+    toggleCases() {
         this.showCases = !this.showCases;
     }
 
@@ -36,7 +36,7 @@ export default class NksNavCaseList extends LightningElement {
     setSelectedNavCase(selectedNavCaseId) {
         let caseItems = this.template.querySelectorAll('c-crm-nav-case-item');
         caseItems.forEach((caseItem) => {
-            caseItem.selected = caseItem.navCase.fagsakId == selectedNavCaseId ? true : false;
+            caseItem.selected = caseItem.navCase.fagsakId === selectedNavCaseId ? true : false;
         });
     }
 
