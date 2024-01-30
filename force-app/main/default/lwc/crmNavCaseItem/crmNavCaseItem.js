@@ -6,7 +6,7 @@ export default class NksNavCaseItem extends LightningElement {
     @api index;
     @api isLast;
 
-    caseSelected(event) {
+    caseSelected() {
         let selectedCase = this.navCase;
         //Sending event to parent that case was selected
         const caseSelectedEvent = new CustomEvent('caseselected', {

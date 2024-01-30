@@ -15,6 +15,7 @@ import NAV_CASE_RETRIEVE_ERROR from '@salesforce/label/c.CRM_NAV_Case_Retrieve_E
 import NO_CASES_ERROR from '@salesforce/label/c.CRM_Journal_Case_List_No_Cases_Error';
 import NO_CASES_FOR_THEME_GROUP from '@salesforce/label/c.CRM_No_Cases_for_Selected_Theme_Group';
 
+// eslint-disable-next-line @lwc/lwc/no-leading-uppercase-api-name
 export default class NksPersonCaseOverview extends LightningElement {
     @api labels = {
         VALIDATION_ERROR,
@@ -26,7 +27,8 @@ export default class NksPersonCaseOverview extends LightningElement {
     @api actorId;
     @api prefilledThemeGroup; //Give the theme categorization child component a prefilled value
     @api prefilledTheme; //Set prefilled theme EX: OPP
-    @api viewType;// Set viewType default value =NO_FILTER
+    @api viewType; // Set viewType default value =NO_FILTER
+    // eslint-disable-next-line @lwc/lwc/valid-api
     @api FAGSAK_ONLY = false;
     caseList = []; //Contains all NAV cases returned from the API
     displayedCaseGroups = []; //Holds the list of case groups to be displayed
@@ -45,15 +47,14 @@ export default class NksPersonCaseOverview extends LightningElement {
         { label: 'Generell', value: 'GENERELL_SAK' }
     ];
 
-    get personTemplate(){
-        if(this.viewType === 'THEME'){
+    get personTemplate() {
+        if (this.viewType === 'THEME') {
             return true;
-        }else{
-            return false;
         }
+        return false;
     }
 
-    render(){
+    render() {
         return this.personTemplate ? themeTemplate : noFilterTemplate;
     }
 
@@ -65,12 +66,12 @@ export default class NksPersonCaseOverview extends LightningElement {
     messageContext;
 
     @wire(getCategorization, {})
-    categoryResults({ data, error }) {
+    categoryResults({ data }) {
         if (data) {
             let themeGroups = [{ label: 'Alle', value: 'ALL' }];
             let mappedThemes = {};
 
-            data.themeGroups.forEach(themeGroup => {
+            data.themeGroups.forEach((themeGroup) => {
                 themeGroups.push({
                     label: themeGroup.Name,
                     value: themeGroup.Id
@@ -79,7 +80,7 @@ export default class NksPersonCaseOverview extends LightningElement {
                 let groupThemes = {};
                 groupThemes.themes = [];
                 if (data.themeMap[themeGroup.Id]) {
-                    groupThemes.themes = data.themeMap[themeGroup.Id].map(theme => {
+                    groupThemes.themes = data.themeMap[themeGroup.Id].map((theme) => {
                         return {
                             themeCode: theme.CRM_Code__c,
                             themeSfId: theme.Id,
@@ -88,11 +89,11 @@ export default class NksPersonCaseOverview extends LightningElement {
                     });
                 }
                 //Property function to determine if the group of themes includes an input theme
-                groupThemes.hasTheme = inputTheme => {
+                groupThemes.hasTheme = (inputTheme) => {
                     let returnTheme = null;
                     for (let idx = 0; idx < groupThemes.themes.length; idx++) {
                         const theme = groupThemes.themes[idx];
-                        if (theme.themeCode == inputTheme) {
+                        if (theme.themeCode === inputTheme) {
                             returnTheme = theme;
                             break;
                         }
@@ -100,11 +101,11 @@ export default class NksPersonCaseOverview extends LightningElement {
                     return returnTheme;
                 };
                 mappedThemes[themeGroup.Id] = groupThemes;
-                mappedThemes.getTheme = inputTheme => {
+                mappedThemes.getTheme = (inputTheme) => {
                     let returnTheme = null;
                     for (const themeGroupId in mappedThemes) {
-                        if (mappedThemes.hasOwnProperty(themeGroupId)) {
-                            returnTheme = mappedThemes[themeGroupId].hasOwnProperty('hasTheme')
+                        if (Object.prototype.hasOwnProperty.call(mappedThemes, themeGroupId)) {
+                            returnTheme = Object.prototype.hasOwnProperty.call(mappedThemes[themeGroupId], 'hasTheme')
                                 ? mappedThemes[themeGroupId].hasTheme(inputTheme)
                                 : null;
                             if (returnTheme !== null) break;
@@ -122,20 +123,20 @@ export default class NksPersonCaseOverview extends LightningElement {
     @wire(getCases, { actorId: '$actorId' })
     wireUser({ error, data }) {
         if (data) {
-            let tempCases=[];
-            if(this.viewType ==='THEME'){
-                for(var i=0;i<data.length;i++){
-                    if(data[i].tema === this.prefilledTheme){
+            let tempCases = [];
+            if (this.viewType === 'THEME') {
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].tema === this.prefilledTheme) {
                         tempCases.push(data[i]);
                     }
                 }
                 this.groupCases(tempCases);
                 this.caseList = tempCases;
-            }else{
+            } else {
                 this.groupCases(data);
                 this.caseList = data;
             }
-            
+
             //this.caseList = data;
             this.casesLoaded = true;
         }
@@ -149,15 +150,16 @@ export default class NksPersonCaseOverview extends LightningElement {
         let groupedCases = {};
         let caseGroups = [];
 
-        cases.forEach(caseItem => {
-                if (groupedCases.hasOwnProperty(caseItem.themeName)) {
-                    groupedCases[caseItem.themeName].push(caseItem);
-                } else {
-                    groupedCases[caseItem.themeName] = [];
-                    groupedCases[caseItem.themeName].push(caseItem);
-                }
+        cases.forEach((caseItem) => {
+            if (Object.prototype.hasOwnProperty.call(groupedCases, caseItem.themeName)) {
+                groupedCases[caseItem.themeName].push(caseItem);
+            } else {
+                groupedCases[caseItem.themeName] = [];
+                groupedCases[caseItem.themeName].push(caseItem);
+            }
         });
 
+        // eslint-disable-next-line @salesforce/aura/ecma-intrinsics, compat/compat
         for (const [key, value] of Object.entries(groupedCases)) {
             caseGroups.push({ themeName: key, theme: value[0].tema, cases: value });
         }
@@ -177,7 +179,7 @@ export default class NksPersonCaseOverview extends LightningElement {
 
     setSelectedNavCase(selectedNavCaseId) {
         let caseLists = this.template.querySelectorAll('c-crm-nav-case-list');
-        caseLists.forEach(caseList => {
+        caseLists.forEach((caseList) => {
             caseList.setSelectedNavCase(selectedNavCaseId);
         });
     }
@@ -187,9 +189,8 @@ export default class NksPersonCaseOverview extends LightningElement {
 
         if (themeGroup === 'ALL') {
             this.displayedCaseGroups = this.groupedCases;
-            return;
         } else {
-            this.displayedCaseGroups = this.groupedCases.filter(caseGroup => {
+            this.displayedCaseGroups = this.groupedCases.filter((caseGroup) => {
                 return this.themeMap[themeGroup].hasTheme(caseGroup.theme) !== null;
             });
         }
@@ -226,9 +227,8 @@ export default class NksPersonCaseOverview extends LightningElement {
         if (this.isGeneralCase === true) {
             let themeCmp = this.template.querySelector('c-crm-theme-categorization');
             return themeCmp.themeCode;
-        } else {
-            return this.selectedCase ? this.selectedCase.tema : null;
         }
+        return this.selectedCase ? this.selectedCase.tema : null;
     }
 
     @api
@@ -236,10 +236,9 @@ export default class NksPersonCaseOverview extends LightningElement {
         if (this.isGeneralCase === true) {
             let themeCmp = this.template.querySelector('c-crm-theme-categorization');
             return themeCmp.theme;
-        } else {
-            let returnTheme = this.themeMap ? this.themeMap.getTheme(this.selectedCaseTheme) : null;
-            return returnTheme !== null ? returnTheme.themeSfId : null;
         }
+        let returnTheme = this.themeMap ? this.themeMap.getTheme(this.selectedCaseTheme) : null;
+        return returnTheme !== null ? returnTheme.themeSfId : null;
     }
 
     @api
@@ -251,8 +250,8 @@ export default class NksPersonCaseOverview extends LightningElement {
             themeGroupSfId = themeCmp.themeGroup;
         } else {
             if (this.themeMap) {
-                Object.keys(this.themeMap).forEach(themeGroupId => {
-                    if (this.themeMap[themeGroupId].hasOwnProperty('hasTheme')) {
+                Object.keys(this.themeMap).forEach((themeGroupId) => {
+                    if (Object.prototype.hasOwnProperty.call(this.themeMap[themeGroupId], 'hasTheme')) {
                         if (this.themeMap[themeGroupId].hasTheme(this.selectedCaseTheme) !== null)
                             themeGroupSfId = themeGroupId;
                     }
@@ -344,12 +343,11 @@ export default class NksPersonCaseOverview extends LightningElement {
         return this.displayedCaseGroups.length > 0;
     }
 
-    get hasTheme(){
-        if( this.prefilledTheme !== null || this.prefilledTheme !== ''){
+    get hasTheme() {
+        if (this.prefilledTheme !== null || this.prefilledTheme !== '') {
             return true;
-        }else{
-            return false;
         }
+        return false;
     }
 
     @api
@@ -360,11 +358,10 @@ export default class NksPersonCaseOverview extends LightningElement {
         } else if (this.isGeneralCase === true) {
             let themeCmp = this.template.querySelector('c-crm-theme-categorization');
             return themeCmp.validate();
-        } else {
-            return {
-                isValid: false,
-                errorMessage: VALIDATION_ERROR
-            };
         }
+        return {
+            isValid: false,
+            errorMessage: VALIDATION_ERROR
+        };
     }
 }
