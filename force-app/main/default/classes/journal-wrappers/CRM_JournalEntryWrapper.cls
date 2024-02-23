@@ -12,6 +12,8 @@ global class CRM_JournalEntryWrapper {
     @AuraEnabled
     public String journalfoerendeEnhet;
     @AuraEnabled
+    public String eksternReferanseId;
+    @AuraEnabled
     public CRM_AvsenderMottaker avsenderMottaker;
     @AuraEnabled
     public CRM_Bruker bruker;
