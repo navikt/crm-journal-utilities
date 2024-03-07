@@ -33,6 +33,8 @@
             <property name="autoFocus" type="String" label="Auto focus on theme group"
                 default="false"
                 role="inputOnly" />
+            <property name="twoColumns" type="Boolean" label="Show in two columns"
+                default="false" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
