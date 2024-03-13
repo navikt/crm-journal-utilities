@@ -65,6 +65,8 @@ public class CRM_JournalUtilities {
             if (existingJEntries.size() > 0) {
                 resp.success = true;
                 resp.duplicate = true;
+                Boolean journalCompleted = (Boolean) responseMap.get('journalpostferdigstilt');
+                resp.journalPostStatus = journalCompleted ? 'Completed' : 'In Progress';
             } else {
                 resp.success = false;
                 LoggerUtility logger = new LoggerUtility('Journal');
