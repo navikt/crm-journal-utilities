@@ -1,5 +1,10 @@
 @isTest
 public class CRM_JournalUtilities_Test {
+    @TestSetup
+    static void makeData() {
+        insert new Journal_Entry__c(Journal_Entry_ID__c = '1234567');
+    }
+
     @isTest
     static void testDocumentGeneration() {
         String stringToEncode, encodedString;
@@ -62,6 +67,65 @@ public class CRM_JournalUtilities_Test {
         Test.stopTest();
 
         System.assertEquals('3456787', journalPostId, 'Incorrect Journal post ID');
+    }
+
+    @isTest
+    static void testPostJournalDuplicate() {
+        CRM_JournalEntryWrapper journalRequest = new CRM_JournalEntryWrapper();
+
+        Test.setMock(
+            HttpCalloutMock.class,
+            new SingleRequestMock(409, 'Conflict', '{"journalpostId": "1234567", "journalpostferdigstilt": true}', null)
+        );
+
+        CRM_JournalUtilities.utilityRequest utilRequest = new CRM_JournalUtilities.utilityRequest(
+            'POST_JOURNAL',
+            null,
+            journalRequest
+        );
+
+        Test.startTest();
+        String journalPostId = CRM_JournalUtilities.handleRequest(
+                new List<CRM_JournalUtilities.utilityRequest>{ utilRequest }
+            )[0]
+            .journalpostId;
+        Boolean duplicate = CRM_JournalUtilities.handleRequest(
+                new List<CRM_JournalUtilities.utilityRequest>{ utilRequest }
+            )[0]
+            .duplicate;
+        Test.stopTest();
+
+        Assert.isTrue(duplicate, 'The journal was not accurately marked as duplicate');
+    }
+
+    @isTest
+    static void testPostJournalDuplicateCrash() {
+        CRM_JournalEntryWrapper journalRequest = new CRM_JournalEntryWrapper();
+
+        Test.setMock(
+            HttpCalloutMock.class,
+            new SingleRequestMock(409, 'Conflict', '{"journalpostId": "3456787", "journalpostferdigstilt": true}', null)
+        );
+
+        CRM_JournalUtilities.utilityRequest utilRequest = new CRM_JournalUtilities.utilityRequest(
+            'POST_JOURNAL',
+            null,
+            journalRequest
+        );
+
+        Test.startTest();
+        String errorMessage = CRM_JournalUtilities.handleRequest(
+                new List<CRM_JournalUtilities.utilityRequest>{ utilRequest }
+            )[0]
+            .errorMessage;
+        Boolean success = CRM_JournalUtilities.handleRequest(
+                new List<CRM_JournalUtilities.utilityRequest>{ utilRequest }
+            )[0]
+            .success;
+        Test.stopTest();
+
+        Assert.isNotNull(errorMessage, 'Error was not defined');
+        Assert.isFalse(success, 'The request returned success when there was no duplicate entry in SF');
     }
 
     @isTest
