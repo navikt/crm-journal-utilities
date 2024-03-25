@@ -8,7 +8,7 @@ public class CRM_JournalUtilities {
     public static List<UtilityResponse> handleRequest(List<utilityRequest> request) {
         List<UtilityResponse> returnList = new List<UtilityResponse>();
 
-        for (UtilityRequest utReq : request) {     
+        for (UtilityRequest utReq : request) {
             switch on (utReq.requestType) {
                 when 'GENERATE_DOCUMENT' {
                     if (String.isNotBlank(utReq.documentString)) {
@@ -52,6 +52,38 @@ public class CRM_JournalUtilities {
             resp.journalpostId = (String) responseMap.get('journalpostId');
             Boolean journalCompleted = (Boolean) responseMap.get('journalpostferdigstilt');
             resp.journalPostStatus = journalCompleted ? 'Completed' : 'In Progress';
+        } else if (statusCode == 409) {
+            // Status 409 is only used when the externalReference we provided for the request has already been used
+            Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(httpResp.getBody());
+            String journalExtId = (String) responseMap.get('journalpostId');
+            List<Journal_entry__c> existingJEntries = [
+                SELECT Id
+                FROM Journal_entry__c
+                WHERE Journal_entry_id__c = :journalExtId
+                LIMIT 1
+            ];
+            if (existingJEntries.size() > 0) {
+                resp.success = true;
+                resp.duplicate = existingJEntries[0].Id != referenceId;
+                Boolean journalCompleted = (Boolean) responseMap.get('journalpostferdigstilt');
+                resp.journalPostStatus = journalCompleted ? 'Completed' : 'In Progress';
+            } else {
+                resp.success = false;
+                LoggerUtility logger = new LoggerUtility('Journal');
+                SObject objectRef = String.isNotBlank(referenceId)
+                    ? referenceId.getSobjectType().newSObject(referenceId)
+                    : null;
+
+                logger.httpError(
+                    'Error posting journal entry, got conflict but found no existing journal post',
+                    httpResp,
+                    objectRef,
+                    CRM_ApplicationDomain.Domain.NKS
+                );
+                String errorRef = logger.peek().UUID__c; //Unique error reference for troubleshooting
+                logger.publish();
+                resp.errorMessage = errorRef;
+            }
         } else {
             resp.success = false;
             //Creates a log entry for troubleshooting
@@ -139,6 +171,8 @@ public class CRM_JournalUtilities {
         @invocableVariable
         public Boolean success;
         @invocableVariable
+        public Boolean duplicate;
+        @invocableVariable
         public String documentString;
         @invocableVariable
         public String journalpostId;
@@ -149,6 +183,7 @@ public class CRM_JournalUtilities {
 
         public UtilityResponse() {
             this.success = false;
+            this.duplicate = false;
             this.documentString = null;
             this.journalpostId = null;
             this.journalPostStatus = null;
@@ -163,6 +198,22 @@ public class CRM_JournalUtilities {
             String journalPostStatus
         ) {
             this.success = success;
+            this.duplicate = false;
+            this.documentString = documentString;
+            this.journalpostId = journalpostId;
+            this.journalPostStatus = journalPostStatus;
+            this.errorMessage = errorMessage;
+        }
+        public UtilityResponse(
+            Boolean success,
+            Boolean duplicate,
+            String documentString,
+            String journalpostId,
+            String errorMessage,
+            String journalPostStatus
+        ) {
+            this.success = success;
+            this.duplicate = duplicate;
             this.documentString = documentString;
             this.journalpostId = journalpostId;
             this.journalPostStatus = journalPostStatus;
