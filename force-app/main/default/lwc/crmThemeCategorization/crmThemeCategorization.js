@@ -11,6 +11,14 @@ export default class CRMThemeCategorization extends LightningElement {
     @track themeGroups = [];
     @track gjelderMap;
     @track themeMap;
+
+    @api paddingBottom;
+    @api optionalTheme = false;
+    @api themeSet = 'ARCHIVE_THEMES'; //Allow defining if the resulting themes should be restricted to only archive themes or not
+    @api variant = 'DEFAULT'; // HIDE_THEME_GROUP, HIDE_SUBTHEME, HIDE_THEME_GROUP_AND_SUBTHEME
+    @api autoFocus = false;
+    @api twoColumns = false;
+
     categories;
     chosenThemeGroup;
     chosenTheme;
@@ -19,11 +27,6 @@ export default class CRMThemeCategorization extends LightningElement {
     chosenSubtype;
     gjelderList;
     themes;
-    @api paddingBottom;
-    @api optionalTheme = false;
-    @api themeSet = 'ARCHIVE_THEMES'; //Allow defining if the resulting themes should be restricted to only archive themes or not
-    @api variant = 'DEFAULT'; // HIDE_THEME_GROUP, HIDE_SUBTHEME, HIDE_THEME_GROUP_AND_SUBTHEME
-    @api autoFocus = false;
 
     @wire(MessageContext)
     messageContext;
