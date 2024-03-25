@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>50.0</apiVersion>
+    <apiVersion>59.0</apiVersion>
     <isExposed>true</isExposed>
-    <masterLabel>Theme categorization</masterLabel>
+    <masterLabel>Theme categorization v. 2</masterLabel>
     <description>Component for efficient categorization by theme group, theme and subtheme</description>
     <targets>
         <target>lightning__FlowScreen</target>
@@ -33,6 +33,8 @@
             <property name="autoFocus" type="String" label="Auto focus on theme group"
                 default="false"
                 role="inputOnly" />
+            <property name="twoColumns" type="Boolean" label="Show in two columns"
+                default="false" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
