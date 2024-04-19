@@ -1,7 +1,8 @@
 import { LightningElement, track, api, wire } from 'lwc';
 import crmSingleValueUpdate from '@salesforce/messageChannel/crmSingleValueUpdate__c';
 import getCategorization from '@salesforce/apex/CRM_ThemeUtils.getCategorizationByThemeSet';
-
+import oneColumnHTML from './oneColumnLayout.html';
+import twoColumnsHTML from './twoColumnsLayout.html';
 import { publish, MessageContext } from 'lightning/messageService';
 
 //#### LABEL IMPORTS ####
@@ -27,6 +28,7 @@ export default class CRMThemeCategorization extends LightningElement {
     chosenSubtype;
     gjelderList;
     themes;
+    hasRendered = false;
 
     @wire(MessageContext)
     messageContext;
@@ -82,7 +84,10 @@ export default class CRMThemeCategorization extends LightningElement {
         }
     }
 
-    hasRendered = false;
+    render() {
+        return this.twoColumns ? twoColumnsHTML : oneColumnHTML;
+    }
+
     renderedCallback() {
         if (this.hasRendered === false && this.autoFocus) {
             this.template.querySelectorAll('lightning-combobox')[0].focus();
