@@ -1,7 +1,8 @@
 import { LightningElement, track, api, wire } from 'lwc';
 import crmSingleValueUpdate from '@salesforce/messageChannel/crmSingleValueUpdate__c';
 import getCategorization from '@salesforce/apex/CRM_ThemeUtils.getCategorizationByThemeSet';
-
+import oneColumnHTML from './oneColumnLayout.html';
+import twoColumnsHTML from './twoColumnsLayout.html';
 import { publish, MessageContext } from 'lightning/messageService';
 
 //#### LABEL IMPORTS ####
@@ -11,6 +12,14 @@ export default class CRMThemeCategorization extends LightningElement {
     @track themeGroups = [];
     @track gjelderMap;
     @track themeMap;
+
+    @api paddingBottom;
+    @api optionalTheme = false;
+    @api themeSet = 'ARCHIVE_THEMES'; //Allow defining if the resulting themes should be restricted to only archive themes or not
+    @api variant = 'DEFAULT'; // HIDE_THEME_GROUP, HIDE_SUBTHEME, HIDE_THEME_GROUP_AND_SUBTHEME
+    @api autoFocus = false;
+    @api twoColumns = false;
+
     categories;
     chosenThemeGroup;
     chosenTheme;
@@ -19,11 +28,7 @@ export default class CRMThemeCategorization extends LightningElement {
     chosenSubtype;
     gjelderList;
     themes;
-    @api paddingBottom;
-    @api optionalTheme = false;
-    @api themeSet = 'ARCHIVE_THEMES'; //Allow defining if the resulting themes should be restricted to only archive themes or not
-    @api variant = 'DEFAULT'; // HIDE_THEME_GROUP, HIDE_SUBTHEME, HIDE_THEME_GROUP_AND_SUBTHEME
-    @api autoFocus = false;
+    hasRendered = false;
 
     @wire(MessageContext)
     messageContext;
@@ -42,10 +47,11 @@ export default class CRMThemeCategorization extends LightningElement {
             this.gjelderMap = data.gjelderMap;
 
             if (this.chosenThemeGroup || this.chosenTheme) {
-                if (this.themeGroupCode != '' && this.themeGroupVisible) this.publishFieldChange('themeGroupCode', this.themeGroupCode);
+                if (this.themeGroupCode != '' && this.themeGroupVisible)
+                    this.publishFieldChange('themeGroupCode', this.themeGroupCode);
                 if (this.themeCode != '') this.publishFieldChange('themeCode', this.themeCode);
                 this.filterThemes();
-            } else if (!this.themeGroupVisible){
+            } else if (!this.themeGroupVisible) {
                 this.filterThemes();
             }
 
@@ -78,7 +84,10 @@ export default class CRMThemeCategorization extends LightningElement {
         }
     }
 
-    hasRendered = false;
+    render() {
+        return this.twoColumns ? twoColumnsHTML : oneColumnHTML;
+    }
+
     renderedCallback() {
         if (this.hasRendered === false && this.autoFocus) {
             this.template.querySelectorAll('lightning-combobox')[0].focus();
@@ -102,7 +111,7 @@ export default class CRMThemeCategorization extends LightningElement {
         this.chosenGjelder = null;
         this.chosenSubtheme = null;
         this.chosenSubtype = null;
-        if(this.subthemeVisible) {
+        if (this.subthemeVisible) {
             this.filterGjelder();
         }
         this.publishFieldChange('themeCode', this.themeCode);
@@ -157,15 +166,12 @@ export default class CRMThemeCategorization extends LightningElement {
     get themeCode() {
         let themeCode = '';
         let themes = [];
-        if(!this.themeGroupVisible && this.themeMap){
+        if (!this.themeGroupVisible && this.themeMap) {
             // if theme groups are hidden, then look for code in all themes
-            Object.values(this.themeMap).forEach(
-                (values) => {
-                    themes = [...themes, ...values];
-                }
-            );
-        }
-        else if(this.themeGroup && this.themeMap && this.themeMap.hasOwnProperty(this.themeGroup)){
+            Object.values(this.themeMap).forEach((values) => {
+                themes = [...themes, ...values];
+            });
+        } else if (this.themeGroup && this.themeMap && this.themeMap.hasOwnProperty(this.themeGroup)) {
             // if theme group provided , then look for code in related themes
             themes = [...this.themeMap[this.themeGroup]];
         }
@@ -199,7 +205,7 @@ export default class CRMThemeCategorization extends LightningElement {
         let subthemeCode = '';
 
         //Added subtheme check as flow was failing when chosing themes with no subthemes
-        if (this.chosenGjelder  && this.subthemeVisible) {
+        if (this.chosenGjelder && this.subthemeVisible) {
             let validGjelder =
                 this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
                     ? this.gjelderMap[this.theme]
@@ -239,7 +245,7 @@ export default class CRMThemeCategorization extends LightningElement {
         let subthemeId = '';
 
         //Added subtheme check as flow was failing when chosing themes with no subthemes
-        if (this.chosenGjelder  && this.subthemeVisible) {
+        if (this.chosenGjelder && this.subthemeVisible) {
             let validGjelder =
                 this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
                     ? this.gjelderMap[this.theme]
@@ -258,7 +264,7 @@ export default class CRMThemeCategorization extends LightningElement {
     @api
     get subtypeId() {
         let subtypeId = '';
-        if (this.chosenGjelder  && this.subthemeVisible) {
+        if (this.chosenGjelder && this.subthemeVisible) {
             let validGjelder =
                 this.theme && this.gjelderMap && Object.keys(this.gjelderMap).length !== 0
                     ? this.gjelderMap[this.theme]
@@ -307,28 +313,21 @@ export default class CRMThemeCategorization extends LightningElement {
             let listThemes = [];
             // if theme groups are hidden, just add all themes
             // else only related themes
-            if(!this.themeGroupVisible && this.themeMap){
-                Object.values(this.themeMap).forEach(
-                    (values) => {
-                        listThemes = [...listThemes, ...values];
-                    }
-                );
-
-            } else if (this.themeGroup && this.themeMap && this.themeGroup in this.themeMap ){
+            if (!this.themeGroupVisible && this.themeMap) {
+                Object.values(this.themeMap).forEach((values) => {
+                    listThemes = [...listThemes, ...values];
+                });
+            } else if (this.themeGroup && this.themeMap && this.themeGroup in this.themeMap) {
                 listThemes = [...this.themeMap[this.themeGroup]];
             }
-            listThemes.filter(
-                (theme) => theme.CRM_Available__c === true
-            ).forEach(
-                (theme) => {
+            listThemes
+                .filter((theme) => theme.CRM_Available__c === true)
+                .forEach((theme) => {
                     returnThemes.push({ label: theme.Name, value: theme.Id });
-                }
-            );
-            this.themes = returnThemes.sort(
-                (a,b) => {
-                    return a.label.localeCompare(b.label,'nb');
-                }
-            );
+                });
+            this.themes = returnThemes.sort((a, b) => {
+                return a.label.localeCompare(b.label, 'nb');
+            });
         }
     }
 
@@ -366,7 +365,7 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     get themeDisabled() {
-        return (!this.chosenThemeGroup && this.themeGroupVisible);
+        return !this.chosenThemeGroup && this.themeGroupVisible;
     }
 
     get gjelderDisabled() {
@@ -379,13 +378,12 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     get themeGroupVisible() {
-        return !(this.variant === 'HIDE_THEME_GROUP' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME'); 
+        return !(this.variant === 'HIDE_THEME_GROUP' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME');
     }
 
     get subthemeVisible() {
-        return !(this.variant === 'HIDE_SUBTHEME' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME');  
+        return !(this.variant === 'HIDE_SUBTHEME' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME');
     }
-
 
     publishFieldChange(field, value) {
         const payload = { name: field, value: value };
