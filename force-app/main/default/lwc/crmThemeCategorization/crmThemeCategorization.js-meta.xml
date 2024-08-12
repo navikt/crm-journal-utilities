@@ -34,7 +34,7 @@
                 default="false"
                 role="inputOnly" />
             <property name="twoColumns" type="Boolean" label="Show in two columns"
-                default="false" />
+                default="false" role="inputOnly" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
