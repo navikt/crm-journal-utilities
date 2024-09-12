@@ -87,7 +87,15 @@ export default class NksPersonCaseOverview extends LightningElement {
                 }
                 //Property function to determine if the group of themes includes an input theme
                 groupThemes.hasTheme = (inputTheme) => {
-                    return groupThemes.themes.find((theme) => theme.themeCode === inputTheme);
+                    let returnTheme = null;
+                    for (let idx = 0; idx < groupThemes.themes.length; idx++) {
+                        const theme = groupThemes.themes[idx];
+                        if (theme.themeCode == inputTheme) {
+                            returnTheme = theme;
+                            break;
+                        }
+                    }
+                    return returnTheme;
                 };
                 mappedThemes[themeGroup.Id] = groupThemes;
                 mappedThemes.getTheme = (inputTheme) => {
@@ -112,8 +120,13 @@ export default class NksPersonCaseOverview extends LightningElement {
     @wire(getCases, { actorId: '$actorId' })
     wireUser({ error, data }) {
         if (data) {
+            let tempCases = [];
             if (this.viewType === 'THEME') {
-                const tempCases = data.filter((item) => item.tema === this.prefilledTheme);
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].tema === this.prefilledTheme) {
+                        tempCases.push(data[i]);
+                    }
+                }
                 this.groupCases(tempCases);
                 this.caseList = tempCases;
             } else {
