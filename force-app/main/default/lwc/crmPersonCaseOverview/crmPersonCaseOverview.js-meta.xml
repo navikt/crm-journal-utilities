@@ -45,6 +45,9 @@
                 role="outputOnly" />
             <property name="selectedThemeGroupSfId" type="String" label="Selected Theme Group SF ID"
                 role="outputOnly" />
+            <property name="autoFocus" type="Boolean" label="Auto focus on radio button group"
+                default="false"
+                role="inputOnly" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
