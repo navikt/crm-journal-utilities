@@ -399,7 +399,11 @@ export default class CRMThemeCategorization extends LightningElement {
     @api
     validate() {
         //Theme and theme group must be set
-        if ((!this.themeGroupVisible && this.theme) || (this.themeGroup && (this.theme || !this.requireTheme))) {
+        if (
+            (!this.themeGroupVisible && this.theme) ||
+            (this.themeGroup && (this.theme || !this.requireTheme)) ||
+            this.optionalThemeGroup
+        ) {
             return { isValid: true };
         } else {
             return {
