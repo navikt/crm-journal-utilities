@@ -35,6 +35,9 @@
                 role="inputOnly" />
             <property name="twoColumns" type="Boolean" label="Show in two columns"
                 default="false" role="inputOnly" />
+            <property name="optionalThemeGroup" type="Boolean"
+                label="Make Theme group field optional"
+                default="false" role="inputOnly" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
