@@ -96,6 +96,55 @@ export default class CRMThemeCategorization extends LightningElement {
         }
     }
 
+    // #### GETTERS ####
+    get wrapperClass() {
+        return this.paddingBottom ? 'wrapper' : '';
+    }
+
+    get requireTheme() {
+        return !this.optionalTheme || !this.themeGroupVisible;
+    }
+
+    get requireThemeGroup() {
+        return !this.optionalThemeGroup;
+    }
+
+    get gjelderPlaceholder() {
+        let placeholder = '(Ikke valgt)';
+        if (this.chosenTheme && this.gjelderMap) {
+            let themeInMap = this.chosenTheme in this.gjelderMap;
+            placeholder = this.gjelderMap && themeInMap ? '(Ikke valgt)' : '(Ingen undertema)';
+        }
+
+        return placeholder;
+    }
+
+    get themeDisabled() {
+        return !this.chosenThemeGroup && this.themeGroupVisible;
+    }
+
+    get gjelderDisabled() {
+        let disabled =
+            !this.chosenTheme ||
+            (this.chosenTheme &&
+                this.gjelderMap &&
+                (Object.keys(this.gjelderMap).length === 0 || !(this.chosenTheme in this.gjelderMap)));
+        return disabled;
+    }
+
+    get themeGroupVisible() {
+        return !(this.variant === 'HIDE_THEME_GROUP' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME');
+    }
+
+    get subthemeVisible() {
+        return !(this.variant === 'HIDE_SUBTHEME' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME');
+    }
+
+    get themeClass() {
+        return this.themeGroupVisible ? 'slds-size_6-of-12' : 'slds-size_6-of-12 slds-var-p-right_small';
+    }
+
+    // #### EVENT HANDLERS ####
     handleThemeGroupChange(event) {
         this.chosenThemeGroup = event.detail.value;
         this.chosenTheme = null;
@@ -127,6 +176,7 @@ export default class CRMThemeCategorization extends LightningElement {
         this.publishFieldChange('subTypeCode', this.subtypeCode);
     }
 
+    // #### PUBLIC API FUNCTIONS ####
     @api
     get themeGroup() {
         return this.chosenThemeGroup;
@@ -281,18 +331,25 @@ export default class CRMThemeCategorization extends LightningElement {
         return subtypeId;
     }
 
-    get wrapperClass() {
-        return this.paddingBottom ? 'wrapper' : '';
+    //Validation preventing user moving to next screen in flow if state is not valid
+    @api
+    validate() {
+        //Theme and theme group must be set
+        if (
+            (!this.themeGroupVisible && this.theme) ||
+            (this.themeGroup && (this.theme || !this.requireTheme)) ||
+            this.optionalThemeGroup
+        ) {
+            return { isValid: true };
+        } else {
+            return {
+                isValid: false,
+                errorMessage: VALIDATION_ERROR
+            };
+        }
     }
 
-    get requireTheme() {
-        return !this.optionalTheme || !this.themeGroupVisible;
-    }
-
-    get requireThemeGroup() {
-        return !this.optionalThemeGroup;
-    }
-
+    // #### PRIVATE FUNCTIONS ####
     filterThemes() {
         let returnThemes = [];
         if (!this.requireTheme) {
@@ -359,57 +416,8 @@ export default class CRMThemeCategorization extends LightningElement {
         this.gjelderList = returnGjelder;
     }
 
-    get gjelderPlaceholder() {
-        let placeholder = '(Ikke valgt)';
-        if (this.chosenTheme && this.gjelderMap) {
-            let themeInMap = this.chosenTheme in this.gjelderMap;
-            placeholder = this.gjelderMap && themeInMap ? '(Ikke valgt)' : '(Ingen undertema)';
-        }
-
-        return placeholder;
-    }
-
-    get themeDisabled() {
-        return !this.chosenThemeGroup && this.themeGroupVisible;
-    }
-
-    get gjelderDisabled() {
-        let disabled =
-            !this.chosenTheme ||
-            (this.chosenTheme &&
-                this.gjelderMap &&
-                (Object.keys(this.gjelderMap).length === 0 || !(this.chosenTheme in this.gjelderMap)));
-        return disabled;
-    }
-
-    get themeGroupVisible() {
-        return !(this.variant === 'HIDE_THEME_GROUP' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME');
-    }
-
-    get subthemeVisible() {
-        return !(this.variant === 'HIDE_SUBTHEME' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME');
-    }
-
     publishFieldChange(field, value) {
         const payload = { name: field, value: value };
         publish(this.messageContext, crmSingleValueUpdate, payload);
-    }
-
-    //Validation preventing user moving to next screen in flow if state is not valid
-    @api
-    validate() {
-        //Theme and theme group must be set
-        if (
-            (!this.themeGroupVisible && this.theme) ||
-            (this.themeGroup && (this.theme || !this.requireTheme)) ||
-            this.optionalThemeGroup
-        ) {
-            return { isValid: true };
-        } else {
-            return {
-                isValid: false,
-                errorMessage: VALIDATION_ERROR
-            };
-        }
     }
 }
