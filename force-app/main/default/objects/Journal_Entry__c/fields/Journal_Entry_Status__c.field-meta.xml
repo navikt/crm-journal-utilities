@@ -32,6 +32,11 @@
                 <default>false</default>
                 <label>Duplicate</label>
             </value>
+            <value>
+                <fullName>Rerun Failed</fullName>
+                <default>false</default>
+                <label>Rerun Failed</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>
