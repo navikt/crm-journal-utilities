@@ -42,63 +42,47 @@ public class CRM_JournalUtilities {
         CRM_JournalService service = new CRM_JournalService();
         UtilityResponse resp = new UtilityResponse();
 
-        Boolean complete = true; //Removed BID specific handling as a results of FAGSYSTEM-189315
-        HttpResponse httpResp = service.postJournal(journalRequest, complete, navIdent);
-        Integer statusCode = httpResp.getStatusCode();
+        HttpResponse httpResp = service.postJournal(journalRequest, true, navIdent);
 
-        if (statusCode == 200 || statusCode == 201) {
+        // Handle Success or Partial Success Responses
+        if (httpResp.getStatusCode() == 200 || httpResp.getStatusCode() == 201 || httpResp.getStatusCode() == 409) {
+            Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(httpResp.getBody());
             resp.success = true;
-            Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(httpResp.getBody());
             resp.journalpostId = (String) responseMap.get('journalpostId');
-            Boolean journalCompleted = (Boolean) responseMap.get('journalpostferdigstilt');
-            resp.journalPostStatus = journalCompleted ? 'Completed' : 'In Progress';
-        } else if (statusCode == 409) {
-            // Status 409 is only used when the externalReference we provided for the request has already been used
-            Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(httpResp.getBody());
-            String journalExtId = (String) responseMap.get('journalpostId');
-            List<Journal_entry__c> existingJEntries = [
-                SELECT Id
-                FROM Journal_entry__c
-                WHERE Journal_entry_id__c = :journalExtId
-                LIMIT 1
-            ];
-            if (existingJEntries.size() > 0) {
-                resp.success = true;
-                resp.duplicate = existingJEntries[0].Id != referenceId;
-                Boolean journalCompleted = (Boolean) responseMap.get('journalpostferdigstilt');
-                resp.journalPostStatus = journalCompleted ? 'Completed' : 'In Progress';
-            } else {
-                resp.success = false;
-                LoggerUtility logger = new LoggerUtility('Journal');
-                SObject objectRef = String.isNotBlank(referenceId)
-                    ? referenceId.getSobjectType().newSObject(referenceId)
-                    : null;
+            resp.journalPostStatus = ((Boolean) responseMap.get('journalpostferdigstilt'))
+                ? 'Completed'
+                : 'In Progress';
 
-                logger.httpError(
-                    'Error posting journal entry, got conflict but found no existing journal post',
-                    httpResp,
-                    objectRef,
-                    CRM_ApplicationDomain.Domain.NKS
-                );
-                String errorRef = logger.peek().UUID__c; //Unique error reference for troubleshooting
-                logger.publish();
-                resp.errorMessage = errorRef;
+            // Status 409 is only used when the externalReference we provided for the request has already been used
+            if (httpResp.getStatusCode() == 409) {
+                List<Journal_Entry__c> existingJEntries = [
+                    SELECT CRM_Thread__c, CRM_Conversation_Note__c
+                    FROM Journal_Entry__c
+                    WHERE Journal_entry_id__c = :resp.journalpostId
+                    LIMIT 1
+                ];
+                resp.duplicate =
+                    existingJEntries.size() > 0 &&
+                    (existingJEntries[0].CRM_Thread__c == referenceId ||
+                    existingJEntries[0].CRM_Conversation_Note__c == referenceId);
             }
         } else {
             resp.success = false;
-            //Creates a log entry for troubleshooting
-            LoggerUtility logger = new LoggerUtility('Journal');
-            SObject objectRef = String.isNotBlank(referenceId)
-                ? referenceId.getSobjectType().newSObject(referenceId)
-                : null;
-
-            logger.httpError('Error posting journal entry', httpResp, objectRef, CRM_ApplicationDomain.Domain.NKS);
-            String errorRef = logger.peek().UUID__c; //Unique error reference for troubleshooting
-            logger.publish();
-            resp.errorMessage = errorRef;
+            handleLogging(httpResp, referenceId, resp);
         }
 
         return resp;
+    }
+
+    private static void handleLogging(HttpResponse httpResp, Id referenceId, UtilityResponse resp) {
+        LoggerUtility logger = new LoggerUtility('Journal');
+        SObject objectRef = String.isNotBlank(referenceId)
+            ? referenceId.getSobjectType().newSObject(referenceId)
+            : null;
+        logger.httpError('Error posting journal entry', httpResp, objectRef, CRM_ApplicationDomain.Domain.NKS);
+        String errorRef = logger.peek().UUID__c;
+        logger.publish();
+        resp.errorMessage = errorRef;
     }
 
     /**
