@@ -58,7 +58,7 @@ public class CRM_JournalUtilities {
                 List<Journal_Entry__c> existingJEntries = [
                     SELECT CRM_Thread__c, CRM_Conversation_Note__c
                     FROM Journal_Entry__c
-                    WHERE Journal_entry_id__c = :resp.journalpostId
+                    WHERE Journal_Entry_Id__c = :resp.journalpostId
                     LIMIT 1
                 ];
                 resp.duplicate =

@@ -2,7 +2,9 @@
 public class CRM_JournalUtilities_Test {
     @TestSetup
     static void makeData() {
-        insert new Journal_Entry__c(Journal_Entry_ID__c = '1234567');
+        Thread__c thread = new Thread__c();
+        insert new Thread__c();
+        insert new Journal_Entry__c(Journal_Entry_ID__c = '1234567', CRM_Thread__c = thread.Id);
     }
 
     @isTest
@@ -83,23 +85,19 @@ public class CRM_JournalUtilities_Test {
             null,
             journalRequest
         );
+        utilRequest.referenceId = [SELECT CRM_Thread__c FROM Journal_Entry__c LIMIT 1].CRM_Thread__c;
 
         Test.startTest();
-        String journalPostId = CRM_JournalUtilities.handleRequest(
-                new List<CRM_JournalUtilities.utilityRequest>{ utilRequest }
-            )[0]
-            .journalpostId;
-        Boolean duplicate = CRM_JournalUtilities.handleRequest(
-                new List<CRM_JournalUtilities.utilityRequest>{ utilRequest }
-            )[0]
-            .duplicate;
+        List<CRM_JournalUtilities.UtilityResponse> responses = CRM_JournalUtilities.handleRequest(
+            new List<CRM_JournalUtilities.utilityRequest>{ utilRequest }
+        );
         Test.stopTest();
 
-        Assert.isTrue(duplicate, 'The journal was not accurately marked as duplicate');
+        Assert.isTrue(responses[0].duplicate, 'The journal was not accurately marked as duplicate');
     }
 
     @isTest
-    static void testPostJournalDuplicateCrash() {
+    static void testPostJournalDuplicateButFoundNoExistingJEntries() {
         CRM_JournalEntryWrapper journalRequest = new CRM_JournalEntryWrapper();
 
         Test.setMock(
@@ -112,20 +110,16 @@ public class CRM_JournalUtilities_Test {
             null,
             journalRequest
         );
+        utilRequest.referenceId = [SELECT CRM_Thread__c FROM Journal_Entry__c LIMIT 1].CRM_Thread__c;
 
         Test.startTest();
-        String errorMessage = CRM_JournalUtilities.handleRequest(
-                new List<CRM_JournalUtilities.utilityRequest>{ utilRequest }
-            )[0]
-            .errorMessage;
-        Boolean success = CRM_JournalUtilities.handleRequest(
-                new List<CRM_JournalUtilities.utilityRequest>{ utilRequest }
-            )[0]
-            .success;
+        List<CRM_JournalUtilities.UtilityResponse> responses = CRM_JournalUtilities.handleRequest(
+            new List<CRM_JournalUtilities.utilityRequest>{ utilRequest }
+        );
         Test.stopTest();
 
-        Assert.isNotNull(errorMessage, 'Error was not defined');
-        Assert.isFalse(success, 'The request returned success when there was no duplicate entry in SF');
+        Assert.isTrue(responses[0].success, 'The response was not accurately set as success');
+        Assert.isFalse(responses[0].duplicate, 'Duplicate was incorrectly set to true');
     }
 
     @isTest
