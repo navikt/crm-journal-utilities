@@ -95,32 +95,6 @@ public class CRM_JournalUtilities_Test {
     }
 
     @isTest
-    static void testPostJournalDuplicateButFoundNoExistingJEntries() {
-        CRM_JournalEntryWrapper journalRequest = new CRM_JournalEntryWrapper();
-
-        Test.setMock(
-            HttpCalloutMock.class,
-            new SingleRequestMock(409, 'Conflict', '{"journalpostId": "3456787", "journalpostferdigstilt": true}', null)
-        );
-
-        CRM_JournalUtilities.utilityRequest utilRequest = new CRM_JournalUtilities.utilityRequest(
-            'POST_JOURNAL',
-            null,
-            journalRequest
-        );
-        utilRequest.referenceId = [SELECT Id FROM Journal_Entry__c LIMIT 1].Id;
-
-        Test.startTest();
-        List<CRM_JournalUtilities.UtilityResponse> responses = CRM_JournalUtilities.handleRequest(
-            new List<CRM_JournalUtilities.utilityRequest>{ utilRequest }
-        );
-        Test.stopTest();
-
-        Assert.isTrue(responses[0].success, 'The response was not accurately set as success');
-        Assert.isFalse(responses[0].duplicate, 'Duplicate was incorrectly set to true');
-    }
-
-    @isTest
     static void testPostJournalError() {
         CRM_JournalEntryWrapper journalRequest = new CRM_JournalEntryWrapper();
 

@@ -52,18 +52,8 @@ public class CRM_JournalUtilities {
             resp.journalPostStatus = ((Boolean) responseMap.get('journalpostferdigstilt'))
                 ? 'Completed'
                 : 'In Progress';
-
             // Status 409 is only used when the externalReference we provided for the request has already been used
-            if (httpResp.getStatusCode() == 409) {
-                List<Journal_Entry__c> existingJEntries = [
-                    SELECT Id
-                    FROM Journal_Entry__c
-                    WHERE Journal_Entry_Id__c = :resp.journalpostId
-                    LIMIT 1
-                ];
-                // Check if same Journal Entry record - if true then it's actually a duplicate
-                resp.duplicate = existingJEntries.size() > 0 && existingJEntries[0].Id == referenceId;
-            }
+            resp.duplicate = httpResp.getStatusCode() == 409;
         } else {
             LoggerUtility logger = new LoggerUtility('Journal');
             SObject objectRef = String.isNotBlank(referenceId)
