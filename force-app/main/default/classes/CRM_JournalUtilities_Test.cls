@@ -2,9 +2,7 @@
 public class CRM_JournalUtilities_Test {
     @TestSetup
     static void makeData() {
-        Thread__c thread = new Thread__c();
-        insert new Thread__c();
-        insert new Journal_Entry__c(Journal_Entry_ID__c = '1234567', CRM_Thread__c = thread.Id);
+        insert new Journal_Entry__c(Journal_Entry_ID__c = '1234567');
     }
 
     @isTest
@@ -85,7 +83,7 @@ public class CRM_JournalUtilities_Test {
             null,
             journalRequest
         );
-        utilRequest.referenceId = [SELECT CRM_Thread__c FROM Journal_Entry__c LIMIT 1].CRM_Thread__c;
+        utilRequest.referenceId = [SELECT Id FROM Journal_Entry__c LIMIT 1].Id;
 
         Test.startTest();
         List<CRM_JournalUtilities.UtilityResponse> responses = CRM_JournalUtilities.handleRequest(
@@ -110,7 +108,7 @@ public class CRM_JournalUtilities_Test {
             null,
             journalRequest
         );
-        utilRequest.referenceId = [SELECT CRM_Thread__c FROM Journal_Entry__c LIMIT 1].CRM_Thread__c;
+        utilRequest.referenceId = [SELECT Id FROM Journal_Entry__c LIMIT 1].Id;
 
         Test.startTest();
         List<CRM_JournalUtilities.UtilityResponse> responses = CRM_JournalUtilities.handleRequest(

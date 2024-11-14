@@ -56,33 +56,27 @@ public class CRM_JournalUtilities {
             // Status 409 is only used when the externalReference we provided for the request has already been used
             if (httpResp.getStatusCode() == 409) {
                 List<Journal_Entry__c> existingJEntries = [
-                    SELECT CRM_Thread__c, CRM_Conversation_Note__c
+                    SELECT Id
                     FROM Journal_Entry__c
                     WHERE Journal_Entry_Id__c = :resp.journalpostId
                     LIMIT 1
                 ];
-                resp.duplicate =
-                    existingJEntries.size() > 0 &&
-                    (existingJEntries[0].CRM_Thread__c == referenceId ||
-                    existingJEntries[0].CRM_Conversation_Note__c == referenceId);
+                // Check if same Journal Entry record - if true then it's actually a duplicate
+                resp.duplicate = existingJEntries.size() > 0 && existingJEntries[0].Id == referenceId;
             }
         } else {
+            LoggerUtility logger = new LoggerUtility('Journal');
+            SObject objectRef = String.isNotBlank(referenceId)
+                ? referenceId.getSobjectType().newSObject(referenceId)
+                : null;
+            logger.httpError('Error posting journal entry', httpResp, objectRef, CRM_ApplicationDomain.Domain.NKS);
+            String errorRef = logger.peek().UUID__c;
+            logger.publish();
             resp.success = false;
-            handleLogging(httpResp, referenceId, resp);
+            resp.errorMessage = errorRef;
         }
 
         return resp;
-    }
-
-    private static void handleLogging(HttpResponse httpResp, Id referenceId, UtilityResponse resp) {
-        LoggerUtility logger = new LoggerUtility('Journal');
-        SObject objectRef = String.isNotBlank(referenceId)
-            ? referenceId.getSobjectType().newSObject(referenceId)
-            : null;
-        logger.httpError('Error posting journal entry', httpResp, objectRef, CRM_ApplicationDomain.Domain.NKS);
-        String errorRef = logger.peek().UUID__c;
-        logger.publish();
-        resp.errorMessage = errorRef;
     }
 
     /**
