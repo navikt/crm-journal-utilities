@@ -83,7 +83,6 @@ public class CRM_JournalUtilities_Test {
             null,
             journalRequest
         );
-        utilRequest.referenceId = [SELECT Id FROM Journal_Entry__c LIMIT 1].Id;
 
         Test.startTest();
         List<CRM_JournalUtilities.UtilityResponse> responses = CRM_JournalUtilities.handleRequest(
