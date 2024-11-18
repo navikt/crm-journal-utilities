@@ -42,6 +42,7 @@ public class CRM_JournalUtilities {
         CRM_JournalService service = new CRM_JournalService();
         UtilityResponse resp = new UtilityResponse();
 
+        //Removed BID specific handling on second param as a results of FAGSYSTEM-189315
         HttpResponse httpResp = service.postJournal(journalRequest, true, navIdent);
 
         // Handle Success or Partial Success Responses
