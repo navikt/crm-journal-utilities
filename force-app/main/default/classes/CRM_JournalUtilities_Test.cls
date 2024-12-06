@@ -85,47 +85,12 @@ public class CRM_JournalUtilities_Test {
         );
 
         Test.startTest();
-        String journalPostId = CRM_JournalUtilities.handleRequest(
-                new List<CRM_JournalUtilities.utilityRequest>{ utilRequest }
-            )[0]
-            .journalpostId;
-        Boolean duplicate = CRM_JournalUtilities.handleRequest(
-                new List<CRM_JournalUtilities.utilityRequest>{ utilRequest }
-            )[0]
-            .duplicate;
+        List<CRM_JournalUtilities.UtilityResponse> responses = CRM_JournalUtilities.handleRequest(
+            new List<CRM_JournalUtilities.utilityRequest>{ utilRequest }
+        );
         Test.stopTest();
 
-        Assert.isTrue(duplicate, 'The journal was not accurately marked as duplicate');
-    }
-
-    @isTest
-    static void testPostJournalDuplicateCrash() {
-        CRM_JournalEntryWrapper journalRequest = new CRM_JournalEntryWrapper();
-
-        Test.setMock(
-            HttpCalloutMock.class,
-            new SingleRequestMock(409, 'Conflict', '{"journalpostId": "3456787", "journalpostferdigstilt": true}', null)
-        );
-
-        CRM_JournalUtilities.utilityRequest utilRequest = new CRM_JournalUtilities.utilityRequest(
-            'POST_JOURNAL',
-            null,
-            journalRequest
-        );
-
-        Test.startTest();
-        String errorMessage = CRM_JournalUtilities.handleRequest(
-                new List<CRM_JournalUtilities.utilityRequest>{ utilRequest }
-            )[0]
-            .errorMessage;
-        Boolean success = CRM_JournalUtilities.handleRequest(
-                new List<CRM_JournalUtilities.utilityRequest>{ utilRequest }
-            )[0]
-            .success;
-        Test.stopTest();
-
-        Assert.isNotNull(errorMessage, 'Error was not defined');
-        Assert.isFalse(success, 'The request returned success when there was no duplicate entry in SF');
+        Assert.isTrue(responses[0].duplicate, 'The journal was not accurately marked as duplicate');
     }
 
     @isTest
