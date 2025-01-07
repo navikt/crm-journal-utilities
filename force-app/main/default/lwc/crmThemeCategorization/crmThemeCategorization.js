@@ -1,4 +1,4 @@
-import { LightningElement, track, api, wire } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import crmSingleValueUpdate from '@salesforce/messageChannel/crmSingleValueUpdate__c';
 import getCategorization from '@salesforce/apex/CRM_ThemeUtils.getCategorizationByThemeSet';
 import oneColumnHTML from './oneColumnLayout.html';
@@ -9,10 +9,6 @@ import { publish, MessageContext } from 'lightning/messageService';
 import VALIDATION_ERROR from '@salesforce/label/c.CRM_Theme_Categorization_Validation_Error';
 
 export default class CRMThemeCategorization extends LightningElement {
-    @track themeGroups = [];
-    @track gjelderMap;
-    @track themeMap;
-
     @api paddingBottom;
     @api optionalThemeGroup = false;
     @api optionalTheme = false;
@@ -20,7 +16,11 @@ export default class CRMThemeCategorization extends LightningElement {
     @api variant = 'DEFAULT'; // HIDE_THEME_GROUP, HIDE_SUBTHEME, HIDE_THEME_GROUP_AND_SUBTHEME
     @api autoFocus = false;
     @api twoColumns = false;
+    @api checkIfGjelderIsRequired = false;
 
+    themeGroups = [];
+    gjelderMap;
+    themeMap;
     categories;
     chosenThemeGroup;
     chosenTheme;
@@ -107,6 +107,10 @@ export default class CRMThemeCategorization extends LightningElement {
 
     get requireThemeGroup() {
         return !this.optionalThemeGroup;
+    }
+
+    get requireGjelder() {
+        return this.checkIfGjelderIsRequired && this.themeCode === 'AAP';
     }
 
     get gjelderPlaceholder() {
@@ -334,19 +338,16 @@ export default class CRMThemeCategorization extends LightningElement {
     //Validation preventing user moving to next screen in flow if state is not valid
     @api
     validate() {
-        //Theme and theme group must be set
-        if (
-            (!this.themeGroupVisible && this.theme) ||
-            (this.themeGroup && (this.theme || !this.requireTheme)) ||
-            this.optionalThemeGroup
-        ) {
-            return { isValid: true };
-        } else {
-            return {
-                isValid: false,
-                errorMessage: VALIDATION_ERROR
-            };
-        }
+        const isValid =
+            (!this.requireGjelder || this.chosenGjelder) &&
+            ((!this.themeGroupVisible && this.theme) ||
+                (this.themeGroup && (this.theme || !this.requireTheme)) ||
+                this.optionalThemeGroup);
+
+        return {
+            isValid,
+            errorMessage: isValid ? null : VALIDATION_ERROR
+        };
     }
 
     // #### PRIVATE FUNCTIONS ####
