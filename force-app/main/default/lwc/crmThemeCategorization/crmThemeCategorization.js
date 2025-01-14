@@ -13,7 +13,7 @@ export default class CRMThemeCategorization extends LightningElement {
     @api optionalThemeGroup = false;
     @api optionalTheme = false;
     @api themeSet = 'ARCHIVE_THEMES'; //Allow defining if the resulting themes should be restricted to only archive themes or not
-    @api variant = 'DEFAULT'; // HIDE_THEME_GROUP, HIDE_SUBTHEME, HIDE_THEME_GROUP_AND_SUBTHEME
+    @api variant = 'DEFAULT'; // HIDE_THEME_GROUP, HIDE_SUBTHEME, HIDE_THEME_GROUP_AND_SUBTHEME, JOURNAL
     @api autoFocus = false;
     @api twoColumns = false;
     @api checkIfGjelderIsRequired = false;
@@ -110,7 +110,7 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     get requireGjelder() {
-        return this.checkIfGjelderIsRequired && this.themeCode === 'AAP';
+        return this.variant === 'JOURNAL' || (this.checkIfGjelderIsRequired && this.themeCode === 'AAP');
     }
 
     get gjelderPlaceholder() {
@@ -407,12 +407,24 @@ export default class CRMThemeCategorization extends LightningElement {
         if (listGjelder.length !== 0) {
             returnGjelder.push({ label: '(Ikke valgt)', value: '' });
         }
-        listGjelder.forEach((gjelder) => {
-            returnGjelder.push({
-                label: gjelder.CRM_Display_Name__c,
-                value: gjelder.Id
+
+        if (this.variant === 'JOURNAL') {
+            listGjelder.forEach((gjelder) => {
+                if (gjelder.CRM_Subtheme__c && !gjelder.CRM_Subtype__c) {
+                    returnGjelder.push({
+                        label: gjelder.CRM_Display_Name__c,
+                        value: gjelder.Id
+                    });
+                }
             });
-        });
+        } else {
+            listGjelder.forEach((gjelder) => {
+                returnGjelder.push({
+                    label: gjelder.CRM_Display_Name__c,
+                    value: gjelder.Id
+                });
+            });
+        }
 
         this.gjelderList = returnGjelder;
     }
