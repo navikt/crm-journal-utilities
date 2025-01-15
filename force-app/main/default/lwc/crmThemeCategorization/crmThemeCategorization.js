@@ -408,7 +408,17 @@ export default class CRMThemeCategorization extends LightningElement {
             returnGjelder.push({ label: '(Ikke valgt)', value: '' });
         }
 
-        if (this.variant === 'JOURNAL') {
+        listGjelder.forEach((gjelder) => {
+    if (
+        this.variant !== 'JOURNAL' || 
+        (this.variant === 'JOURNAL' && gjelder.CRM_Subtheme__c && !gjelder.CRM_Subtype__c)
+    ) {
+        returnGjelder.push({
+            label: gjelder.CRM_Display_Name__c,
+            value: gjelder.Id
+        });
+    }
+});
             listGjelder.forEach((gjelder) => {
                 if (gjelder.CRM_Subtheme__c && !gjelder.CRM_Subtype__c) {
                     returnGjelder.push({
