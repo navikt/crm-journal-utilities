@@ -55,6 +55,17 @@ public class CRM_JournalUtilities {
                 : 'In Progress';
             // Status 409 is only used when the externalReference we provided for the request has already been used
             resp.duplicate = httpResp.getStatusCode() == 409;
+        // If journal request belongs to TAG, send error meassage to application log domain POAB
+        } else if (journalRequest.tilleggsopplysninger[0].nokkel == 'SF_TiltakDialog') {
+            LoggerUtility logger = new LoggerUtility('Journal');
+            SObject objectRef = String.isNotBlank(referenceId)
+                ? referenceId.getSobjectType().newSObject(referenceId)
+                : null;
+            logger.httpError('Error posting journal entry', httpResp, objectRef, CRM_ApplicationDomain.Domain.POAB);
+            String errorRef = logger.peek().UUID__c;
+            logger.publish();
+            resp.success = false;
+            resp.errorMessage = errorRef;
         } else {
             LoggerUtility logger = new LoggerUtility('Journal');
             SObject objectRef = String.isNotBlank(referenceId)
