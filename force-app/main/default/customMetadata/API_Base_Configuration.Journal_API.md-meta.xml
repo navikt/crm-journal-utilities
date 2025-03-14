@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>App_Name_Test__c</field>
-        <value xsi:type="xsd:string">dokarkiv-q2</value>
+        <value xsi:type="xsd:string">dokarkiv</value>
     </values>
     <values>
         <field>App_Name__c</field>
