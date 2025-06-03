@@ -66,7 +66,7 @@ export default class CRMThemeCategorization extends LightningElement {
                         this.theme &&
                         this.gjelderMap &&
                         Object.keys(this.gjelderMap).length !== 0 &&
-                        Object.hasOwn(this.gjelderMap, this.theme)
+                        Object.prototype.hasOwnProperty.call(this.gjelderMap, this.theme)
                             ? this.gjelderMap[this.theme]
                             : [];
                     for (let gjelder of validGjelder) {
@@ -225,10 +225,15 @@ export default class CRMThemeCategorization extends LightningElement {
         let themes = [];
         if (!this.themeGroupVisible && this.themeMap) {
             // if theme groups are hidden, then look for code in all themes
+            // eslint-disable-next-line @salesforce/aura/ecma-intrinsics
             Object.values(this.themeMap).forEach((values) => {
                 themes = [...themes, ...values];
             });
-        } else if (this.themeGroup && this.themeMap && Object.hasOwn(this.themeMap, this.themeGroup)) {
+        } else if (
+            this.themeGroup &&
+            this.themeMap &&
+            Object.prototype.hasOwnProperty.call(this.themeMap, this.themeGroup)
+        ) {
             // if theme group provided , then look for code in related themes
             themes = [...this.themeMap[this.themeGroup]];
         }
@@ -361,7 +366,7 @@ export default class CRMThemeCategorization extends LightningElement {
         //If the task already has a theme defined but no theme group
         if (this.chosenTheme && !this.chosenThemeGroup && this.themeGroupVisible) {
             for (const key in this.themeMap) {
-                if (Object.hasOwn(this.themeMap, key)) {
+                if (Object.prototype.hasOwnProperty.call(this.themeMap, key)) {
                     this.themeMap[key].forEach((theme) => {
                         if (theme.Id === this.theme) {
                             returnThemes.push({
@@ -379,6 +384,7 @@ export default class CRMThemeCategorization extends LightningElement {
             // if theme groups are hidden, just add all themes
             // else only related themes
             if (!this.themeGroupVisible && this.themeMap) {
+                // eslint-disable-next-line @salesforce/aura/ecma-intrinsics
                 Object.values(this.themeMap).forEach((values) => {
                     listThemes = [...listThemes, ...values];
                 });

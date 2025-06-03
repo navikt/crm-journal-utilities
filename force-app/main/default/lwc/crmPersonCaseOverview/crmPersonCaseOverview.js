@@ -13,6 +13,7 @@ import NAV_CASE_RETRIEVE_ERROR from '@salesforce/label/c.CRM_NAV_Case_Retrieve_E
 import NO_CASES_ERROR from '@salesforce/label/c.CRM_Journal_Case_List_No_Cases_Error';
 import NO_CASES_FOR_THEME_GROUP from '@salesforce/label/c.CRM_No_Cases_for_Selected_Theme_Group';
 
+// eslint-disable-next-line @lwc/lwc/no-leading-uppercase-api-name
 export default class NksPersonCaseOverview extends LightningElement {
     @api labels = {
         VALIDATION_ERROR,
@@ -25,6 +26,7 @@ export default class NksPersonCaseOverview extends LightningElement {
     @api prefilledThemeGroup; //Give the theme categorization child component a prefilled value
     @api prefilledTheme; //Set prefilled theme EX: OPP
     @api viewType; // Set viewType default value =NO_FILTER
+    // eslint-disable-next-line @lwc/lwc/valid-api
     @api FAGSAK_ONLY = false;
     @api paddingBottom;
     @api autoFocus = false;
@@ -110,8 +112,8 @@ export default class NksPersonCaseOverview extends LightningElement {
                 mappedThemes.getTheme = (inputTheme) => {
                     let returnTheme = null;
                     for (const themeGroupId in mappedThemes) {
-                        if (Object.hasOwn(mappedThemes, themeGroupId)) {
-                            returnTheme = Object.hasOwn(mappedThemes[themeGroupId], 'hasTheme')
+                        if (Object.prototype.hasOwnProperty.call(mappedThemes, themeGroupId)) {
+                            returnTheme = Object.prototype.hasOwnProperty.call(mappedThemes[themeGroupId], 'hasTheme')
                                 ? mappedThemes[themeGroupId].hasTheme(inputTheme)
                                 : null;
                             if (returnTheme !== null) break;
@@ -157,14 +159,14 @@ export default class NksPersonCaseOverview extends LightningElement {
         let caseGroups = [];
 
         cases.forEach((caseItem) => {
-            if (Object.hasOwn(groupedCases, caseItem.themeName)) {
+            if (Object.prototype.hasOwnProperty.call(groupedCases, caseItem.themeName)) {
                 groupedCases[caseItem.themeName].push(caseItem);
             } else {
                 groupedCases[caseItem.themeName] = [];
                 groupedCases[caseItem.themeName].push(caseItem);
             }
         });
-
+        // eslint-disable-next-line @salesforce/aura/ecma-intrinsics, compat/compat
         for (const [key, value] of Object.entries(groupedCases)) {
             caseGroups.push({ themeName: key, theme: value[0].tema, cases: value });
         }
@@ -281,7 +283,7 @@ export default class NksPersonCaseOverview extends LightningElement {
 
         if (this.themeMap) {
             Object.keys(this.themeMap).forEach((themeGroupId) => {
-                if (Object.hasOwn(this.themeMap[themeGroupId], 'hasTheme')) {
+                if (Object.prototype.hasOwnProperty.call(this.themeMap[themeGroupId], 'hasTheme')) {
                     if (this.themeMap[themeGroupId].hasTheme(this.selectedCaseTheme) !== null)
                         themeGroupSfId = themeGroupId;
                 }
