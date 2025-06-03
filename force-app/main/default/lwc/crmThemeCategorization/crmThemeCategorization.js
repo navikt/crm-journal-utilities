@@ -92,7 +92,7 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     renderedCallback() {
-        if (this.hasRendered === false && this.autoFocus) {
+        if (!this.hasRendered && this.autoFocus) {
             this.template.querySelectorAll('lightning-combobox')[0].focus();
             this.hasRendered = true;
         }
@@ -392,7 +392,7 @@ export default class CRMThemeCategorization extends LightningElement {
                 listThemes = [...this.themeMap[this.themeGroup]];
             }
             listThemes
-                .filter((theme) => theme.CRM_Available__c === true)
+                .filter((theme) => theme.CRM_Available__c)
                 .forEach((theme) => {
                     returnThemes.push({ label: theme.Name, value: theme.Id });
                 });

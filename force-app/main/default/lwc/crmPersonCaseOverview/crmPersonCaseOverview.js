@@ -224,7 +224,7 @@ export default class NksPersonCaseOverview extends LightningElement {
         //Theme and theme group must be set
         if (this.selectedCase) {
             return { isValid: true };
-        } else if (this.isGeneralCase === true) {
+        } else if (this.isGeneralCase) {
             let themeCmp = this.template.querySelector('c-crm-theme-categorization');
             return themeCmp.validate();
         }
@@ -255,7 +255,7 @@ export default class NksPersonCaseOverview extends LightningElement {
 
     @api
     get selectedCaseTheme() {
-        if (this.isGeneralCase === true) {
+        if (this.isGeneralCase) {
             let themeCmp = this.template.querySelector('c-crm-theme-categorization');
             return themeCmp.themeCode;
         }
@@ -319,7 +319,7 @@ export default class NksPersonCaseOverview extends LightningElement {
     @api
     get selectedSubthemeSfId() {
         let subthemeSfId;
-        if (this.isGeneralCase === true) {
+        if (this.isGeneralCase) {
             let themeCmp = this.template.querySelector('c-crm-theme-categorization');
             subthemeSfId = themeCmp.subtheme;
         }
@@ -329,7 +329,7 @@ export default class NksPersonCaseOverview extends LightningElement {
     @api
     get selectedSubtheme() {
         let subtheme;
-        if (this.isGeneralCase === true) {
+        if (this.isGeneralCase) {
             let themeCmp = this.template.querySelector('c-crm-theme-categorization');
             subtheme = themeCmp.subthemeCode;
         }
@@ -339,7 +339,7 @@ export default class NksPersonCaseOverview extends LightningElement {
     @api
     get selectedSubtypeSfId() {
         let subtypeSfId;
-        if (this.isGeneralCase === true) {
+        if (this.isGeneralCase) {
             let themeCmp = this.template.querySelector('c-crm-theme-categorization');
             subtypeSfId = themeCmp.subtype;
         }
@@ -349,7 +349,7 @@ export default class NksPersonCaseOverview extends LightningElement {
     @api
     get selectedSubtype() {
         let subtype;
-        if (this.isGeneralCase === true) {
+        if (this.isGeneralCase) {
             let themeCmp = this.template.querySelector('c-crm-theme-categorization');
             subtype = themeCmp.subtypeCode;
         }
@@ -369,7 +369,7 @@ export default class NksPersonCaseOverview extends LightningElement {
     }
 
     get dataLoaded() {
-        return (this.error === true || this.casesLoaded === true) && this.themeMap;
+        return (this.error || this.casesLoaded) && this.themeMap;
     }
 
     get hasThemeGroupCases() {
