@@ -48,9 +48,9 @@ export default class CRMThemeCategorization extends LightningElement {
             this.gjelderMap = data.gjelderMap;
 
             if (this.chosenThemeGroup || this.chosenTheme) {
-                if (this.themeGroupCode != '' && this.themeGroupVisible)
+                if (this.themeGroupCode && this.themeGroupVisible)
                     this.publishFieldChange('themeGroupCode', this.themeGroupCode);
-                if (this.themeCode != '') this.publishFieldChange('themeCode', this.themeCode);
+                if (this.themeCode) this.publishFieldChange('themeCode', this.themeCode);
                 this.filterThemes();
             } else if (!this.themeGroupVisible) {
                 this.filterThemes();
@@ -66,7 +66,7 @@ export default class CRMThemeCategorization extends LightningElement {
                         this.theme &&
                         this.gjelderMap &&
                         Object.keys(this.gjelderMap).length !== 0 &&
-                        this.gjelderMap.hasOwnProperty(this.theme)
+                        Object.hasOwn(this.gjelderMap, this.theme)
                             ? this.gjelderMap[this.theme]
                             : [];
                     for (let gjelder of validGjelder) {
@@ -82,6 +82,8 @@ export default class CRMThemeCategorization extends LightningElement {
                     }
                 }
             }
+        } else if (error) {
+            console.error('Problem on getCategorization(): ', JSON.stringify(error, null, 2));
         }
     }
 
@@ -226,7 +228,7 @@ export default class CRMThemeCategorization extends LightningElement {
             Object.values(this.themeMap).forEach((values) => {
                 themes = [...themes, ...values];
             });
-        } else if (this.themeGroup && this.themeMap && this.themeMap.hasOwnProperty(this.themeGroup)) {
+        } else if (this.themeGroup && this.themeMap && Object.hasOwn(this.themeMap, this.themeGroup)) {
             // if theme group provided , then look for code in related themes
             themes = [...this.themeMap[this.themeGroup]];
         }
@@ -359,7 +361,7 @@ export default class CRMThemeCategorization extends LightningElement {
         //If the task already has a theme defined but no theme group
         if (this.chosenTheme && !this.chosenThemeGroup && this.themeGroupVisible) {
             for (const key in this.themeMap) {
-                if (this.themeMap.hasOwnProperty(key)) {
+                if (Object.hasOwn(this.themeMap, key)) {
                     this.themeMap[key].forEach((theme) => {
                         if (theme.Id === this.theme) {
                             returnThemes.push({
