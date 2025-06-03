@@ -2,11 +2,9 @@ import { LightningElement, api, wire } from 'lwc';
 import getCases from '@salesforce/apex/CRM_NavSakService.getSafActorCases';
 import getCategorization from '@salesforce/apex/CRM_ThemeUtils.getCategorization';
 import crmSingleValueUpdate from '@salesforce/messageChannel/crmSingleValueUpdate__c';
-
-/* 2 different html template */
 import noFilterTemplate from './crmPersonCaseOverview.html';
+import noFilterTemplateNewDesign from './crmPersonCaseOverviewNewDesign.html';
 import themeTemplate from './crmPersonCaseTheme.html';
-
 import { publish, MessageContext } from 'lightning/messageService';
 
 //##LABEL IMPORTS
@@ -30,8 +28,9 @@ export default class NksPersonCaseOverview extends LightningElement {
     @api FAGSAK_ONLY = false;
     @api paddingBottom;
     @api autoFocus = false;
+    @api useNewDesign = false;
 
-    caseList = []; //Contains all NAV cases returned from the API
+    caseList = []; //Contains all Nav cases returned from the API
     displayedCaseGroups = []; //Holds the list of case groups to be displayed
     groupedCases = [];
     selectedCase;
@@ -48,13 +47,24 @@ export default class NksPersonCaseOverview extends LightningElement {
     rendered = false;
 
     render() {
-        return this.personTemplate ? themeTemplate : noFilterTemplate;
+        if (this.personTemplate) {
+            return themeTemplate;
+        } else {
+            return this.useNewDesign ? noFilterTemplateNewDesign : noFilterTemplate;
+        }
     }
 
     renderedCallback() {
         this.setSelectedNavCase(this.selectedCaseId);
         if (!this.rendered && this.autoFocus) {
-            this.template.querySelector('lightning-radio-group').focus();
+            if (this.useNewDesign) {
+                const customRadio = this.template.querySelector('input[type="radio"][name="caseType"]');
+                if (customRadio) customRadio.focus();
+            } else {
+                const radioGroup = this.template.querySelector('lightning-radio-group');
+                if (radioGroup) radioGroup.focus();
+            }
+
             this.rendered = true;
         }
     }
@@ -65,8 +75,8 @@ export default class NksPersonCaseOverview extends LightningElement {
     @wire(getCategorization, {})
     categoryResults({ data, error }) {
         if (data) {
-            let themeGroups = [{ label: 'Alle', value: 'ALL' }];
-            let mappedThemes = {};
+            const themeGroups = [{ label: 'Alle', value: 'ALL' }];
+            const mappedThemes = {};
 
             data.themeGroups.forEach((themeGroup) => {
                 themeGroups.push({
@@ -74,7 +84,7 @@ export default class NksPersonCaseOverview extends LightningElement {
                     value: themeGroup.Id
                 });
                 //Creating the theme map (ThemegroupId (SF) => [{ themeCode: code, themeSfId: id}])
-                let groupThemes = {};
+                const groupThemes = {};
                 groupThemes.themes = [];
                 if (data.themeMap[themeGroup.Id]) {
                     groupThemes.themes = data.themeMap[themeGroup.Id].map((theme) => {
@@ -88,8 +98,8 @@ export default class NksPersonCaseOverview extends LightningElement {
                 //Property function to determine if the group of themes includes an input theme
                 groupThemes.hasTheme = (inputTheme) => {
                     let returnTheme = null;
-                    for (let idx = 0; idx < groupThemes.themes.length; idx++) {
-                        const theme = groupThemes.themes[idx];
+                    for (const element of groupThemes.themes) {
+                        const theme = element;
                         if (theme.themeCode == inputTheme) {
                             returnTheme = theme;
                             break;
@@ -122,9 +132,9 @@ export default class NksPersonCaseOverview extends LightningElement {
         if (data) {
             let tempCases = [];
             if (this.viewType === 'THEME') {
-                for (var i = 0; i < data.length; i++) {
-                    if (data[i].tema === this.prefilledTheme) {
-                        tempCases.push(data[i]);
+                for (const element of data) {
+                    if (element.tema === this.prefilledTheme) {
+                        tempCases.push(element);
                     }
                 }
                 this.groupCases(tempCases);
@@ -196,10 +206,31 @@ export default class NksPersonCaseOverview extends LightningElement {
         this.selectedCaseType = event.detail.value;
     }
 
+    // handle radion button change
+    handleCaseTypeInputChange(event) {
+        this.handleCaseTypeChange({ detail: { value: event.target.value } });
+    }
+
     //Publish to nksWorkAllocation component to trigger search in flow context
     publishFieldChange(field, value) {
         const payload = { name: field, value: value };
         publish(this.messageContext, crmSingleValueUpdate, payload);
+    }
+
+    @api
+    validate() {
+        //Theme and theme group must be set
+        if (this.selectedCase) {
+            return { isValid: true };
+        } else if (this.isGeneralCase === true) {
+            let themeCmp = this.template.querySelector('c-crm-theme-categorization');
+            return themeCmp.validate();
+        } else {
+            return {
+                isValid: false,
+                errorMessage: VALIDATION_ERROR
+            };
+        }
     }
 
     get personTemplate() {
@@ -233,7 +264,7 @@ export default class NksPersonCaseOverview extends LightningElement {
 
     @api
     get selectedCaseThemeSfId() {
-        if (this.isGeneralCase === true) {
+        if (this.isGeneralCase) {
             let themeCmp = this.template.querySelector('c-crm-theme-categorization');
             return themeCmp.theme;
         } else {
@@ -246,19 +277,20 @@ export default class NksPersonCaseOverview extends LightningElement {
     get selectedThemeGroupSfId() {
         let themeGroupSfId;
 
-        if (this.isGeneralCase === true) {
+        if (this.isGeneralCase) {
             let themeCmp = this.template.querySelector('c-crm-theme-categorization');
             themeGroupSfId = themeCmp.themeGroup;
-        } else {
-            if (this.themeMap) {
-                Object.keys(this.themeMap).forEach((themeGroupId) => {
-                    if (this.themeMap[themeGroupId].hasOwnProperty('hasTheme')) {
-                        if (this.themeMap[themeGroupId].hasTheme(this.selectedCaseTheme) !== null)
-                            themeGroupSfId = themeGroupId;
-                    }
-                });
-            }
         }
+
+        if (this.themeMap) {
+            Object.keys(this.themeMap).forEach((themeGroupId) => {
+                if (this.themeMap[themeGroupId].hasOwnProperty('hasTheme')) {
+                    if (this.themeMap[themeGroupId].hasTheme(this.selectedCaseTheme) !== null)
+                        themeGroupSfId = themeGroupId;
+                }
+            });
+        }
+
         return themeGroupSfId;
     }
 
@@ -266,15 +298,16 @@ export default class NksPersonCaseOverview extends LightningElement {
     get selectedThemeGroup() {
         let themeGroupCode;
 
-        if (this.isGeneralCase === true) {
+        if (this.isGeneralCase) {
             let themeCmp = this.template.querySelector('c-crm-theme-categorization');
             themeGroupCode = themeCmp.themeGroup;
-        } else {
-            if (this.themeMap) {
-                let mappedTheme = this.themeMap.getTheme(this.selectedCaseTheme);
-                if (mappedTheme) themeGroupCode = this.themeMap.getTheme(this.selectedCaseTheme).themeGroupCode;
-            }
         }
+
+        if (this.themeMap) {
+            let mappedTheme = this.themeMap.getTheme(this.selectedCaseTheme);
+            if (mappedTheme) themeGroupCode = this.themeMap.getTheme(this.selectedCaseTheme).themeGroupCode;
+        }
+
         return themeGroupCode;
     }
 
@@ -346,21 +379,5 @@ export default class NksPersonCaseOverview extends LightningElement {
 
     get hasTheme() {
         return this.prefilledTheme !== null || this.prefilledTheme !== '';
-    }
-
-    @api
-    validate() {
-        //Theme and theme group must be set
-        if (this.selectedCase) {
-            return { isValid: true };
-        } else if (this.isGeneralCase === true) {
-            let themeCmp = this.template.querySelector('c-crm-theme-categorization');
-            return themeCmp.validate();
-        } else {
-            return {
-                isValid: false,
-                errorMessage: VALIDATION_ERROR
-            };
-        }
     }
 }

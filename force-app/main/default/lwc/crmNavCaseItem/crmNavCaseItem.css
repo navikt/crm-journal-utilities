@@ -23,3 +23,7 @@
     border-bottom-right-radius: 0.2em;
     border-bottom-left-radius: 0.2em;
 }
+
+.custom-padding {
+    padding-left: 2rem;
+}

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>50.0</apiVersion>
+    <apiVersion>63.0</apiVersion>
     <isExposed>true</isExposed>
     <masterLabel>Person Case Overview</masterLabel>
     <description>Displaying a list of a persons cases with NAV</description>
@@ -47,6 +47,8 @@
                 role="outputOnly" />
             <property name="autoFocus" type="Boolean" label="Auto focus on radio button group"
                 default="false"
+                role="inputOnly" />
+            <property name="useNewDesign" type="Boolean" label="Use New Design" default="false"
                 role="inputOnly" />
         </targetConfig>
     </targetConfigs>
