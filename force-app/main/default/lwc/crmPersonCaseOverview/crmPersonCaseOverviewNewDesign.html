@@ -8,7 +8,7 @@
                 >
                     Ønsker du å journalføre på:
                 </legend>
-                <div class="slds-form-element__control" onchange={handleCaseTypeInputChange}>
+                <div class="slds-form-element__control slds-var-m-bottom_xx-small" onchange={handleCaseTypeInputChange}>
                     <span class="slds-radio">
                         <input type="radio" id="fagsak" value="FAGSAK" name="caseType" checked />
                         <label class="slds-radio__label" for="fagsak">
@@ -34,6 +34,7 @@
                 theme-group={prefilledThemeGroup}
                 padding-bottom={paddingBottom}
                 variant="JOURNAL"
+                use-new-design
             ></c-crm-theme-categorization>
         </template>
         <template lwc:else>
