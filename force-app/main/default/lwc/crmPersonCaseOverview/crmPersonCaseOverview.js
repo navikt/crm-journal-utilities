@@ -208,7 +208,7 @@ export default class NksPersonCaseOverview extends LightningElement {
         this.selectedCaseType = event.detail.value;
     }
 
-    // handle radion button change
+    // handle radio button change
     handleCaseTypeInputChange(event) {
         this.handleCaseTypeChange({ detail: { value: event.target.value } });
     }
