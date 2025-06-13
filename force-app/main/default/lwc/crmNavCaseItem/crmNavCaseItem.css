@@ -1,29 +1,11 @@
 .case-tile-bg {
-    cursor: pointer;
     --sds-c-icon-color-foreground-default: white;
-}
-
-.case-tile-bg:hover {
-    background-color: var(--lwc-colorBorder, rgb(221, 219, 218));
-}
-
-.item-grey {
-    background-color: #f2f2f2;
-}
-
-.selected {
-    background-color: var(--lwc-brandAccessible, rgba(1, 118, 211, 1)) !important;
 }
 
 .selected * {
     color: white;
 }
 
-.item-last {
-    border-bottom-right-radius: 0.2em;
-    border-bottom-left-radius: 0.2em;
-}
-
-.custom-padding {
-    padding-left: 2rem;
+.item-grey {
+    background-color: #f2f2f2;
 }
