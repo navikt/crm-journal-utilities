@@ -437,7 +437,9 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     get gjelderLabel() {
-        return this.useNewDesign ? 'Gjelder (Må velges - er obligatorisk for valgt tema)' : 'Gjelder';
+        return this.useNewDesign && this.requireGjelder
+            ? 'Gjelder (Må velges - er obligatorisk for valgt tema)'
+            : 'Gjelder';
     }
 
     get showGjelderText() {
