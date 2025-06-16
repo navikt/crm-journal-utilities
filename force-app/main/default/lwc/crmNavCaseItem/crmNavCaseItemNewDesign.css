@@ -2,6 +2,8 @@
     padding-left: 2rem;
 }
 
-[data-selected='true'] {
+[data-selected='true'],
+[data-selected='true']:hover {
     color: white;
+    background-color: #00459c;
 }

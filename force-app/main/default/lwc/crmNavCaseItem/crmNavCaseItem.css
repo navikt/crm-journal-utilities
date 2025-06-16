@@ -9,3 +9,7 @@
 .item-grey {
     background-color: #f2f2f2;
 }
+
+[data-selected='true'] {
+    background-color: var(--lwc-brandAccessible, rgba(1, 118, 211, 1)) !important;
+}
