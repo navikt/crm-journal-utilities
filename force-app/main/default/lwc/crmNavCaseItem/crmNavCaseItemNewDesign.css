@@ -1,3 +1,7 @@
 .custom-padding {
     padding-left: 2rem;
 }
+
+[data-selected='true'] {
+    color: white;
+}
