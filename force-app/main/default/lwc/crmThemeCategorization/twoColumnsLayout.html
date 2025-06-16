@@ -1,6 +1,6 @@
 <template>
     <lightning-layout class={wrapperClass} size="12" multiple-rows="true">
-        <template if:true={themeGroupVisible}>
+        <template lwc:if={themeGroupVisible}>
             <lightning-combobox
                 class="slds-size_6-of-12 slds-var-p-right_small"
                 name="ThemeGroup"
@@ -27,8 +27,8 @@
             dropdown-alignment="auto"
         >
         </lightning-combobox>
-        <template if:true={subthemeVisible}>
-            <template lwc:if={requireGjelder}>
+        <template lwc:if={subthemeVisible}>
+            <template lwc:if={showGjelderText}>
                 <div class="slds-var-p-top_small" role="alert" aria-live="assertive">
                     <font color="#8C4B02"> Gjelder-verdi er obligatorisk for valgt tema. </font>
                 </div>
@@ -36,7 +36,7 @@
             <lightning-combobox
                 class="slds-size_6-of-12 slds-var-p-right_small"
                 name="Gjelder"
-                label="Gjelder"
+                label={gjelderLabel}
                 required={requireGjelder}
                 placeholder={gjelderPlaceholder}
                 options={gjelderList}

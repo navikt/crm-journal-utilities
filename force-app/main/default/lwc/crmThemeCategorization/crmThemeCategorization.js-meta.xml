@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>61.0</apiVersion>
+    <apiVersion>63.0</apiVersion>
     <isExposed>true</isExposed>
     <masterLabel>Theme categorization</masterLabel>
     <description>Component for efficient categorization by theme group, theme and subtheme</description>
@@ -40,6 +40,9 @@
                 default="false" role="inputOnly" />
             <property name="checkIfGjelderIsRequired" type="Boolean"
                 label="Check if Gjelder should be required"
+                default="false" role="inputOnly" />
+            <property name="useNewDesign" type="Boolean"
+                label="Use new design"
                 default="false" role="inputOnly" />
         </targetConfig>
     </targetConfigs>

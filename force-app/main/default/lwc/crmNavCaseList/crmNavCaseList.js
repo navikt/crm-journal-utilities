@@ -1,20 +1,27 @@
 import { LightningElement, api } from 'lwc';
+import originalTemplate from './crmNavCaseList.html';
+import newDesignTemplate from './crmNavCaseListNewDesign.html';
 
 //##LABEL IMPORTS
 import COL_CREATED_DATE from '@salesforce/label/c.CRM_Journal_Case_List_Col_Created_Date';
 import COL_CASE_ID from '@salesforce/label/c.CRM_Journal_Case_List_Col_Case_Id';
 
 export default class NksNavCaseList extends LightningElement {
+    @api themeName;
+    @api cases;
+    @api useNewDesign = false;
+
+    showCases = false;
     labels = {
         COL_CREATED_DATE,
         COL_CASE_ID
     };
 
-    @api themeName;
-    @api cases;
-    @api showCases = false;
+    render() {
+        return this.useNewDesign ? newDesignTemplate : originalTemplate;
+    }
 
-    toggleCases(event) {
+    toggleCases() {
         this.showCases = !this.showCases;
     }
 
@@ -36,12 +43,12 @@ export default class NksNavCaseList extends LightningElement {
     setSelectedNavCase(selectedNavCaseId) {
         let caseItems = this.template.querySelectorAll('c-crm-nav-case-item');
         caseItems.forEach((caseItem) => {
-            caseItem.selected = caseItem.navCase.fagsakId == selectedNavCaseId ? true : false;
+            caseItem.selected = caseItem.navCase.fagsakId === selectedNavCaseId;
         });
     }
 
     get chevronIcon() {
-        return this.showCases === false ? 'utility:chevronright' : 'utility:chevrondown';
+        return !this.showCases ? 'utility:chevronright' : 'utility:chevrondown';
     }
 
     get sortedCases() {

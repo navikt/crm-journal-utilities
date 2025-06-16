@@ -14,20 +14,13 @@
                     ></c-crm-nav-case-list>
                 </template>
                 <template if:false={hasThemeGroupCases}>
-                    <c-crm-alert-banner
-                        type="info"
-                        message={labels.NO_CASES_FOR_THEME_GROUP}
-                    ></c-crm-alert-banner>
+                    <c-crm-alert-banner type="info" message={labels.NO_CASES_FOR_THEME_GROUP}></c-crm-alert-banner>
                 </template>
             </template>
         </template>
         <template if:false={hasCases}>
             <!--ERROR OCCURRED-->
-            <c-crm-alert-banner
-                if:true={casesLoaded}
-                type="Info"
-                message={labels.NO_CASES_ERROR}
-            ></c-crm-alert-banner>
+            <c-crm-alert-banner if:true={casesLoaded} type="Info" message={labels.NO_CASES_ERROR}></c-crm-alert-banner>
         </template>
         <template if:true={error}>
             <!--ERROR OCCURRED-->

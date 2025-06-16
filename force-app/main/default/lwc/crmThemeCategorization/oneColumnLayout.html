@@ -1,7 +1,7 @@
 <template>
     <div class={wrapperClass}>
         <lightning-combobox
-            if:true={themeGroupVisible}
+            lwc:if={themeGroupVisible}
             name="ThemeGroup"
             label="Temagruppe"
             options={themeGroups}
@@ -24,15 +24,15 @@
             dropdown-alignment="auto"
         >
         </lightning-combobox>
-        <template lwc:if={requireGjelder}>
+        <template lwc:if={showGjelderText}>
             <div class="slds-var-p-top_small" role="alert" aria-live="assertive">
                 <font color="#8C4B02"> Gjelder-verdi er obligatorisk for valgt tema. </font>
             </div>
         </template>
         <lightning-combobox
-            if:true={subthemeVisible}
+            lwc:if={subthemeVisible}
             name="Gjelder"
-            label="Gjelder"
+            label={gjelderLabel}
             required={requireGjelder}
             placeholder={gjelderPlaceholder}
             options={gjelderList}

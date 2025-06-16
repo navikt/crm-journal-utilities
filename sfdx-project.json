@@ -10,15 +10,20 @@
                 {
                     "package": "crm-platform-base",
                     "versionNumber": "0.224.0.LATEST"
+                },
+                 {
+                    "package": "crm-thread-view",
+                    "versionNumber": "0.7.0.LATEST"
                 }
             ]
         }
     ],
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "53.0",
+    "sourceApiVersion": "63.0",
     "packageAliases": {
         "crm-journal-utilities": "0Ho2o000000fxXkCAI",
-        "crm-platform-base": "0Ho2o0000008ORmCAM"
+        "crm-platform-base": "0Ho2o0000008ORmCAM",
+        "crm-thread-view": "0Ho7U000000000zSAA"
     }
 }

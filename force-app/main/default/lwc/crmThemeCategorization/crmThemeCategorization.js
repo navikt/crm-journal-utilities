@@ -17,6 +17,7 @@ export default class CRMThemeCategorization extends LightningElement {
     @api autoFocus = false;
     @api twoColumns = false;
     @api checkIfGjelderIsRequired = false;
+    @api useNewDesign = false;
 
     themeGroups = [];
     gjelderMap;
@@ -48,9 +49,9 @@ export default class CRMThemeCategorization extends LightningElement {
             this.gjelderMap = data.gjelderMap;
 
             if (this.chosenThemeGroup || this.chosenTheme) {
-                if (this.themeGroupCode != '' && this.themeGroupVisible)
+                if (this.themeGroupCode && this.themeGroupVisible)
                     this.publishFieldChange('themeGroupCode', this.themeGroupCode);
-                if (this.themeCode != '') this.publishFieldChange('themeCode', this.themeCode);
+                if (this.themeCode) this.publishFieldChange('themeCode', this.themeCode);
                 this.filterThemes();
             } else if (!this.themeGroupVisible) {
                 this.filterThemes();
@@ -66,7 +67,7 @@ export default class CRMThemeCategorization extends LightningElement {
                         this.theme &&
                         this.gjelderMap &&
                         Object.keys(this.gjelderMap).length !== 0 &&
-                        this.gjelderMap.hasOwnProperty(this.theme)
+                        Object.prototype.hasOwnProperty.call(this.gjelderMap, this.theme)
                             ? this.gjelderMap[this.theme]
                             : [];
                     for (let gjelder of validGjelder) {
@@ -82,6 +83,8 @@ export default class CRMThemeCategorization extends LightningElement {
                     }
                 }
             }
+        } else if (error) {
+            console.error('Problem on getCategorization(): ', JSON.stringify(error, null, 2));
         }
     }
 
@@ -90,62 +93,10 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     renderedCallback() {
-        if (this.hasRendered === false && this.autoFocus) {
+        if (!this.hasRendered && this.autoFocus) {
             this.template.querySelectorAll('lightning-combobox')[0].focus();
             this.hasRendered = true;
         }
-    }
-
-    // #### GETTERS ####
-    get wrapperClass() {
-        return this.paddingBottom ? 'wrapper' : '';
-    }
-
-    get requireTheme() {
-        return !this.optionalTheme || !this.themeGroupVisible;
-    }
-
-    get requireThemeGroup() {
-        return !this.optionalThemeGroup;
-    }
-
-    get requireGjelder() {
-        return this.variant === 'JOURNAL' || (this.checkIfGjelderIsRequired && this.themeCode === 'AAP');
-    }
-
-    get gjelderPlaceholder() {
-        let placeholder = '(Ikke valgt)';
-        if (this.chosenTheme && this.gjelderMap) {
-            let themeInMap = this.chosenTheme in this.gjelderMap;
-            placeholder = this.gjelderMap && themeInMap ? '(Ikke valgt)' : '(Ingen undertema)';
-        }
-
-        return placeholder;
-    }
-
-    get themeDisabled() {
-        return !this.chosenThemeGroup && this.themeGroupVisible;
-    }
-
-    get gjelderDisabled() {
-        let disabled =
-            !this.chosenTheme ||
-            (this.chosenTheme &&
-                this.gjelderMap &&
-                (Object.keys(this.gjelderMap).length === 0 || !(this.chosenTheme in this.gjelderMap)));
-        return disabled;
-    }
-
-    get themeGroupVisible() {
-        return !(this.variant === 'HIDE_THEME_GROUP' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME');
-    }
-
-    get subthemeVisible() {
-        return !(this.variant === 'HIDE_SUBTHEME' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME');
-    }
-
-    get themeClass() {
-        return this.themeGroupVisible ? 'slds-size_6-of-12' : 'slds-size_6-of-12 slds-var-p-right_small';
     }
 
     // #### EVENT HANDLERS ####
@@ -180,7 +131,101 @@ export default class CRMThemeCategorization extends LightningElement {
         this.publishFieldChange('subTypeCode', this.subtypeCode);
     }
 
-    // #### PUBLIC API FUNCTIONS ####
+    //Validation preventing user moving to next screen in flow if state is not valid
+    @api
+    validate() {
+        const isValid =
+            (!this.requireGjelder || this.chosenGjelder) &&
+            ((!this.themeGroupVisible && this.theme) ||
+                (this.themeGroup && (this.theme || !this.requireTheme)) ||
+                this.optionalThemeGroup);
+
+        return {
+            isValid,
+            errorMessage: isValid ? null : VALIDATION_ERROR
+        };
+    }
+
+    // #### PRIVATE FUNCTIONS ####
+    filterThemes() {
+        let returnThemes = [];
+        if (!this.requireTheme) {
+            returnThemes.push({ label: '(Ikke valgt)', value: '' });
+        }
+        //If the task already has a theme defined but no theme group
+        if (this.chosenTheme && !this.chosenThemeGroup && this.themeGroupVisible) {
+            for (const key in this.themeMap) {
+                if (Object.prototype.hasOwnProperty.call(this.themeMap, key)) {
+                    this.themeMap[key].forEach((theme) => {
+                        if (theme.Id === this.theme) {
+                            returnThemes.push({
+                                label: theme.Name,
+                                value: theme.Id
+                            });
+                        }
+                    });
+                    break;
+                }
+            }
+            this.themes = returnThemes;
+        } else {
+            let listThemes = [];
+            // if theme groups are hidden, just add all themes
+            // else only related themes
+            if (!this.themeGroupVisible && this.themeMap) {
+                // eslint-disable-next-line @salesforce/aura/ecma-intrinsics
+                Object.values(this.themeMap).forEach((values) => {
+                    listThemes = [...listThemes, ...values];
+                });
+            } else if (this.themeGroup && this.themeMap && this.themeGroup in this.themeMap) {
+                listThemes = [...this.themeMap[this.themeGroup]];
+            }
+            listThemes
+                .filter((theme) => theme.CRM_Available__c)
+                .forEach((theme) => {
+                    returnThemes.push({ label: theme.Name, value: theme.Id });
+                });
+            this.themes = returnThemes.sort((a, b) => {
+                return a.label.localeCompare(b.label, 'nb');
+            });
+        }
+    }
+
+    filterGjelder() {
+        let listGjelder =
+            this.chosenTheme &&
+            this.gjelderMap &&
+            Object.keys(this.gjelderMap).length !== 0 &&
+            this.chosenTheme in this.gjelderMap
+                ? this.gjelderMap[this.chosenTheme]
+                : [];
+        let returnGjelder = [];
+        //Adding blank value for gjelder to allow removing value after one has been set.
+        if (listGjelder.length !== 0) {
+            returnGjelder.push({ label: '(Ikke valgt)', value: '' });
+        }
+
+        listGjelder.forEach((gjelder) => {
+            if (
+                this.variant !== 'JOURNAL' ||
+                (this.variant === 'JOURNAL' && gjelder.CRM_Subtheme__c && !gjelder.CRM_Subtype__c)
+            ) {
+                returnGjelder.push({
+                    label: gjelder.CRM_Display_Name__c,
+                    value: gjelder.Id
+                });
+            }
+        });
+
+        this.gjelderList = returnGjelder;
+    }
+
+    publishFieldChange(field, value) {
+        const payload = { name: field, value: value };
+        publish(this.messageContext, crmSingleValueUpdate, payload);
+    }
+
+    // #### GETTERS / SETTERS ####
     @api
     get themeGroup() {
         return this.chosenThemeGroup;
@@ -223,10 +268,15 @@ export default class CRMThemeCategorization extends LightningElement {
         let themes = [];
         if (!this.themeGroupVisible && this.themeMap) {
             // if theme groups are hidden, then look for code in all themes
+            // eslint-disable-next-line @salesforce/aura/ecma-intrinsics
             Object.values(this.themeMap).forEach((values) => {
                 themes = [...themes, ...values];
             });
-        } else if (this.themeGroup && this.themeMap && this.themeMap.hasOwnProperty(this.themeGroup)) {
+        } else if (
+            this.themeGroup &&
+            this.themeMap &&
+            Object.prototype.hasOwnProperty.call(this.themeMap, this.themeGroup)
+        ) {
             // if theme group provided , then look for code in related themes
             themes = [...this.themeMap[this.themeGroup]];
         }
@@ -335,96 +385,62 @@ export default class CRMThemeCategorization extends LightningElement {
         return subtypeId;
     }
 
-    //Validation preventing user moving to next screen in flow if state is not valid
-    @api
-    validate() {
-        const isValid =
-            (!this.requireGjelder || this.chosenGjelder) &&
-            ((!this.themeGroupVisible && this.theme) ||
-                (this.themeGroup && (this.theme || !this.requireTheme)) ||
-                this.optionalThemeGroup);
-
-        return {
-            isValid,
-            errorMessage: isValid ? null : VALIDATION_ERROR
-        };
+    get wrapperClass() {
+        return this.paddingBottom ? 'wrapper' : '';
     }
 
-    // #### PRIVATE FUNCTIONS ####
-    filterThemes() {
-        let returnThemes = [];
-        if (!this.requireTheme) {
-            returnThemes.push({ label: '(Ikke valgt)', value: '' });
-        }
-        //If the task already has a theme defined but no theme group
-        if (this.chosenTheme && !this.chosenThemeGroup && this.themeGroupVisible) {
-            for (const key in this.themeMap) {
-                if (this.themeMap.hasOwnProperty(key)) {
-                    this.themeMap[key].forEach((theme) => {
-                        if (theme.Id === this.theme) {
-                            returnThemes.push({
-                                label: theme.Name,
-                                value: theme.Id
-                            });
-                        }
-                    });
-                    break;
-                }
-            }
-            this.themes = returnThemes;
-        } else {
-            let listThemes = [];
-            // if theme groups are hidden, just add all themes
-            // else only related themes
-            if (!this.themeGroupVisible && this.themeMap) {
-                Object.values(this.themeMap).forEach((values) => {
-                    listThemes = [...listThemes, ...values];
-                });
-            } else if (this.themeGroup && this.themeMap && this.themeGroup in this.themeMap) {
-                listThemes = [...this.themeMap[this.themeGroup]];
-            }
-            listThemes
-                .filter((theme) => theme.CRM_Available__c === true)
-                .forEach((theme) => {
-                    returnThemes.push({ label: theme.Name, value: theme.Id });
-                });
-            this.themes = returnThemes.sort((a, b) => {
-                return a.label.localeCompare(b.label, 'nb');
-            });
-        }
+    get requireTheme() {
+        return !this.optionalTheme || !this.themeGroupVisible;
     }
 
-    filterGjelder() {
-        let listGjelder =
-            this.chosenTheme &&
-            this.gjelderMap &&
-            Object.keys(this.gjelderMap).length !== 0 &&
-            this.chosenTheme in this.gjelderMap
-                ? this.gjelderMap[this.chosenTheme]
-                : [];
-        let returnGjelder = [];
-        //Adding blank value for gjelder to allow removing value after one has been set.
-        if (listGjelder.length !== 0) {
-            returnGjelder.push({ label: '(Ikke valgt)', value: '' });
-        }
-
-        listGjelder.forEach((gjelder) => {
-            if (
-                this.variant !== 'JOURNAL' ||
-                (this.variant === 'JOURNAL' && gjelder.CRM_Subtheme__c && !gjelder.CRM_Subtype__c)
-            ) {
-                returnGjelder.push({
-                    label: gjelder.CRM_Display_Name__c,
-                    value: gjelder.Id
-                });
-            }
-        });
-
-        this.gjelderList = returnGjelder;
+    get requireThemeGroup() {
+        return !this.optionalThemeGroup;
     }
 
-    publishFieldChange(field, value) {
-        const payload = { name: field, value: value };
-        publish(this.messageContext, crmSingleValueUpdate, payload);
+    get requireGjelder() {
+        return this.variant === 'JOURNAL' || (this.checkIfGjelderIsRequired && this.themeCode === 'AAP');
+    }
+
+    get gjelderPlaceholder() {
+        let placeholder = '(Ikke valgt)';
+        if (this.chosenTheme && this.gjelderMap) {
+            let themeInMap = this.chosenTheme in this.gjelderMap;
+            placeholder = this.gjelderMap && themeInMap ? '(Ikke valgt)' : '(Ingen undertema)';
+        }
+
+        return placeholder;
+    }
+
+    get themeDisabled() {
+        return !this.chosenThemeGroup && this.themeGroupVisible;
+    }
+
+    get gjelderDisabled() {
+        let disabled =
+            !this.chosenTheme ||
+            (this.chosenTheme &&
+                this.gjelderMap &&
+                (Object.keys(this.gjelderMap).length === 0 || !(this.chosenTheme in this.gjelderMap)));
+        return disabled;
+    }
+
+    get themeGroupVisible() {
+        return !(this.variant === 'HIDE_THEME_GROUP' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME');
+    }
+
+    get subthemeVisible() {
+        return !(this.variant === 'HIDE_SUBTHEME' || this.variant === 'HIDE_THEME_GROUP_AND_SUBTHEME');
+    }
+
+    get themeClass() {
+        return this.themeGroupVisible ? 'slds-size_6-of-12' : 'slds-size_6-of-12 slds-var-p-right_small';
+    }
+
+    get gjelderLabel() {
+        return this.useNewDesign ? 'Gjelder (Må velges - er obligatorisk for valgt tema)' : 'Gjelder';
+    }
+
+    get showGjelderText() {
+        return !this.useNewDesign && this.requireGjelder;
     }
 }
