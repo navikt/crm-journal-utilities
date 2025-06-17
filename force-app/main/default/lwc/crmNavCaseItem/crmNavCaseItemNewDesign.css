@@ -1,5 +1,6 @@
 .custom-padding {
     padding-left: 2rem;
+    overflow-wrap: break-word;
 }
 
 [data-selected='true'] {
