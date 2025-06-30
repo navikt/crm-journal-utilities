@@ -1,22 +1,22 @@
 {
     "orgName": "crm-journal-utilities",
     "edition": "Enterprise",
-    "release": "Current",
     "adminEmail": "fakeemail@nav.no.scratchorg",
     "features": [
-        "ProcessBuilder",
-        "API",
-        "LiveAgent",
-        "PersonAccounts",
         "Sites",
         "ForceComPlatform",
         "Communities",
-        "Knowledge",
         "CustomerCommunity",
         "CustomerCommunityPlus",
+        "PersonAccounts",
+        "ProcessBuilder",
+        "Knowledge",
+        "API",
         "ServiceCloud",
+        "LiveAgent",
         "LightningServiceConsole",
-        "FIELDSERVICE:1"
+        "FIELDSERVICE:1",
+        "LiveMessage"
     ],
     "country": "NO",
     "language": "en_US",
@@ -27,27 +27,24 @@
         "lightningExperienceSettings": {
             "enableS1DesktopEnabled": true
         },
+        "accountSettings": {
+            "enableRelateContactToMultipleAccounts": true
+        },
+        "knowledgeSettings": {
+            "enableKnowledge": true,
+            "enableLightningKnowledge": true
+        },
         "languageSettings": {
             "enableTranslationWorkbench": true
         },
-        "accountSettings": {
-            "enableRelateContactToMultipleAccounts": true
+        "nameSettings": {
+            "enableMiddleName": true
         },
         "liveAgentSettings": {
             "enableLiveAgent": true
         },
         "omniChannelSettings": {
             "enableOmniChannel": true
-        },
-        "knowledgeSettings": {
-            "enableKnowledge": true,
-            "enableLightningKnowledge": true
-        },
-        "emailAdministrationSettings": {
-            "enableEnhancedEmailEnabled": true
-        },
-        "nameSettings": {
-            "enableMiddleName": true
         },
         "fieldServiceSettings": {
             "fieldServiceOrgPref": true,
@@ -57,6 +54,9 @@
             "isGeoCodeSyncEnabled": false,
             "isLocationHistoryEnabled": false,
             "fieldServiceNotificationsOrgPref": true
+        },
+        "liveMessageSettings": {
+            "enableLiveMessage": true
         }
     }
 }
