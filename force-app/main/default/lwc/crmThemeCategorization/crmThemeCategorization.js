@@ -398,7 +398,7 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     get requireGjelder() {
-        return (this.variant === 'JOURNAL' && this.themeCode !== 'SER' ) || (this.checkIfGjelderIsRequired && this.themeCode === 'AAP');
+        return (this.variant === 'JOURNAL' && this.gjelderList?.length !== 0) || (this.checkIfGjelderIsRequired && this.themeCode === 'AAP');
     }
 
     get gjelderPlaceholder() {
