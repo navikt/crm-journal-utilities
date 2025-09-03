@@ -42,31 +42,44 @@ public class CRM_JournalUtilities {
         CRM_JournalService service = new CRM_JournalService();
         UtilityResponse resp = new UtilityResponse();
 
-        //Removed BID specific handling on second param as a results of FAGSYSTEM-189315
-        HttpResponse httpResp = service.postJournal(journalRequest, true, navIdent);
 
-        // Handle Success or Partial Success Responses
-        if (httpResp.getStatusCode() == 200 || httpResp.getStatusCode() == 201 || httpResp.getStatusCode() == 409) {
-            Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(httpResp.getBody());
-            resp.success = true;
-            resp.journalpostId = (String) responseMap.get('journalpostId');
-            resp.journalPostStatus = ((Boolean) responseMap.get('journalpostferdigstilt'))
-                ? 'Completed'
-                : 'In Progress';
-            // Status 409 is only used when the externalReference we provided for the request has already been used
-            resp.duplicate = httpResp.getStatusCode() == 409;
-        } else {
+        try {
+            //Removed BID specific handling on second param as a results of FAGSYSTEM-189315
+            HttpResponse httpResp = service.postJournal(journalRequest, true, navIdent);
+
+            // Handle Success or Partial Success Responses
+            if (httpResp.getStatusCode() == 200 || httpResp.getStatusCode() == 201 || httpResp.getStatusCode() == 409) {
+                Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(httpResp.getBody());
+                resp.success = true;
+                resp.journalpostId = (String) responseMap.get('journalpostId');
+                resp.journalPostStatus = ((Boolean) responseMap.get('journalpostferdigstilt'))
+                    ? 'Completed'
+                    : 'In Progress';
+                // Status 409 is only used when the externalReference we provided for the request has already been used
+                resp.duplicate = httpResp.getStatusCode() == 409;
+            } else {
+                LoggerUtility logger = new LoggerUtility('Journal');
+                SObject objectRef = String.isNotBlank(referenceId)
+                    ? referenceId.getSobjectType().newSObject(referenceId)
+                    : null;
+                logger.httpError('Error posting journal entry', httpResp, objectRef, CRM_ApplicationDomain.Domain.NKS);
+                String errorRef = logger.peek().UUID__c;
+                logger.publish();
+                resp.success = false;
+                resp.errorMessage = errorRef;
+            }
+        } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility('Journal');
             SObject objectRef = String.isNotBlank(referenceId)
                 ? referenceId.getSobjectType().newSObject(referenceId)
                 : null;
-            logger.httpError('Error posting journal entry', httpResp, objectRef, CRM_ApplicationDomain.Domain.NKS);
+            logger.error('Journal Entry callout failed after retry. Exception: ' + e.getMessage(), objectRef, CRM_ApplicationDomain.Domain.NKS);
             String errorRef = logger.peek().UUID__c;
             logger.publish();
             resp.success = false;
             resp.errorMessage = errorRef;
         }
-
+        
         return resp;
     }
 
