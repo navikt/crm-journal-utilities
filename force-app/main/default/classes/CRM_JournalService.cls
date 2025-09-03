@@ -34,11 +34,21 @@ public without sharing class CRM_JournalService {
             .setBody(JSON.serialize(journalRequest, true))
             .setHeaders(httpHeaders);
 
-        apiCtrl.doCallout();
-        HttpResponse response = apiCtrl.getResponse();
+        HttpResponse response;
+        
+        try {
+            apiCtrl.doCallout();
+            response = apiCtrl.getResponse();
 
-        if (shouldRetry(response, hasRetried)) {
-            return doJournalCallout(journalRequest, complete, navIdent, true);
+            if (shouldRetry(response, hasRetried)) {
+                return doJournalCallout(journalRequest, complete, navIdent, true);
+            }
+        } catch (Exception e) {
+            // Treat timeout or other callout issues like a 5xx and retry once
+            if (!hasRetried) {
+                return doJournalCallout(journalRequest, complete, navIdent, true);
+            }
+            throw e;
         }
 
         return response;
