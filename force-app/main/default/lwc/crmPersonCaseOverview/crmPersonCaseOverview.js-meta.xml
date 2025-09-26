@@ -48,8 +48,6 @@
             <property name="autoFocus" type="Boolean" label="Auto focus on radio button group"
                 default="false"
                 role="inputOnly" />
-            <property name="useNewDesign" type="Boolean" label="Use New Design" default="false"
-                role="inputOnly" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

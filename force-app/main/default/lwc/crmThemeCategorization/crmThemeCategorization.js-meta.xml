@@ -41,9 +41,6 @@
             <property name="checkIfGjelderIsRequired" type="Boolean"
                 label="Check if Gjelder should be required"
                 default="false" role="inputOnly" />
-            <property name="useNewDesign" type="Boolean"
-                label="Use new design"
-                default="false" role="inputOnly" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
