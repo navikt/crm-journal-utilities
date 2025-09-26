@@ -1,0 +1,9 @@
+.custom-padding {
+    padding-left: 2rem;
+    overflow-wrap: break-word;
+}
+
+[data-selected='true'] {
+    color: white;
+    background-color: #00459c;
+}

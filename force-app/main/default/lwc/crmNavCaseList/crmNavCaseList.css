@@ -1,4 +1,20 @@
-.custom-padding {
-    padding-left: 2rem;
-    overflow-wrap: break-word;
+.list-tile-bg {
+    background-color: rgb(242, 242, 242);
+    border-style: solid;
+    border-color: rgb(242, 242, 242);
+    border-width: 1px;
+    cursor: pointer;
+    border-radius: 0.2em;
+}
+
+.list-tile-bg:hover {
+    border-color: rgb(21, 137, 238);
+    border-style: solid;
+    box-shadow: 0 0 0.1em #0070d2;
+    border-width: 1px;
+}
+
+.list-border {
+    border: solid 0.01rem var(--lwc-colorBorder, rgb(221, 219, 218));
+    border-radius: 0.2em;
 }

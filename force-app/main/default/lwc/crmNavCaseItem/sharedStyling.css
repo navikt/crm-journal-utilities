@@ -1,0 +1,12 @@
+.case-tile-bg {
+    cursor: pointer;
+}
+
+.case-tile-bg:not([data-selected='true']):hover {
+    background-color: var(--lwc-colorBorder, rgb(221, 219, 218));
+}
+
+.item-last {
+    border-bottom-right-radius: 0.2em;
+    border-bottom-left-radius: 0.2em;
+}

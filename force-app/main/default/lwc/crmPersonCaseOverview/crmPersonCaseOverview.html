@@ -1,34 +1,35 @@
 <template>
-    <div class="slds-var-p-top_small">
-        <template lwc:if={FAGSAK_ONLY}></template>
-        <template lwc:else>
-            <fieldset class="slds-form-element">
-                <legend
-                    class="slds-form-element__legend slds-form-element__label slds-var-p-bottom_small slds-text-heading_small"
-                >
-                    Ønsker du å journalføre på:
-                </legend>
-                <div class="slds-form-element__control slds-var-m-bottom_xx-small" onchange={handleCaseTypeInputChange}>
-                    <span class="slds-radio">
-                        <input type="radio" id="fagsak" value="FAGSAK" name="caseType" checked />
-                        <label class="slds-radio__label" for="fagsak">
-                            <span class="slds-radio_faux"></span>
-                            <span class="slds-form-element__label">Fagsaker</span>
-                        </label>
-                    </span>
-                    <span class="slds-radio">
-                        <input type="radio" id="generell" value="GENERELL_SAK" name="caseType" />
-                        <label class="slds-radio__label" for="generell">
-                            <span class="slds-radio_faux"></span>
-                            <span class="slds-form-element__label">Generelle saker</span>
-                        </label>
-                    </span>
-                </div>
-            </fieldset>
-        </template>
-    </div>
-    <div class="slds-var-p-top_medium">
-        <template lwc:if={isGeneralCase}>
+    <lightning-layout class="slds-p-top_small" multiple-rows="true" vertical-align="center">
+        <lightning-layout-item size="12">
+            <lightning-radio-group
+                if:false={FAGSAK_ONLY}
+                name="caseType"
+                aria-label="Sakstype"
+                class="slds-float_left"
+                options={caseTypeOptions}
+                value={selectedCaseType}
+                onchange={handleCaseTypeChange}
+                type="button"
+                variant="label-hidden"
+            >
+            </lightning-radio-group>
+        </lightning-layout-item>
+        <lightning-layout-item flexibility="shrink" class="slds-var-p-top_small">
+            <lightning-combobox
+                if:false={isGeneralCase}
+                name="themeGroup"
+                aria-label="Temagruppe"
+                value={value}
+                placeholder="Temagruppe"
+                options={themeGroupOptions}
+                onchange={handleFilterChange}
+                variant="label-hidden"
+            >
+            </lightning-combobox>
+        </lightning-layout-item>
+    </lightning-layout>
+    <div class="slds-p-top_small slds-p-bottom_small">
+        <template if:true={isGeneralCase}>
             <!--IF GENERELL SAK IS CHOSEN, THE CATEGORIZATION IS DONE MANUALLY-->
             <c-crm-theme-categorization
                 theme-group={prefilledThemeGroup}
@@ -36,11 +37,14 @@
                 variant="JOURNAL"
             ></c-crm-theme-categorization>
         </template>
-        <template lwc:else>
-            <template lwc:if={dataLoaded}>
-                <template lwc:if={hasCases}>
-                    <template lwc:if={showCases}>
-                        <template lwc:if={hasThemeGroupCases} for:each={displayedCaseGroups} for:item="caseGroup">
+        <template if:false={isGeneralCase}>
+            <template if:false={dataLoaded}>
+                <lightning-spinner size="medium" alternative-text="Loading" variant="brand"></lightning-spinner>
+            </template>
+            <template if:true={dataLoaded}>
+                <template if:true={hasCases}>
+                    <template if:true={showCases}>
+                        <template if:true={hasThemeGroupCases} for:each={displayedCaseGroups} for:item="caseGroup">
                             <c-crm-nav-case-list
                                 key={caseGroup.theme}
                                 theme-name={caseGroup.themeName}
@@ -48,7 +52,7 @@
                                 oncaseselected={handleCaseSelected}
                             ></c-crm-nav-case-list>
                         </template>
-                        <template lwc:else>
+                        <template if:false={hasThemeGroupCases}>
                             <c-crm-alert-banner
                                 type="info"
                                 message={labels.NO_CASES_FOR_THEME_GROUP}
@@ -56,21 +60,18 @@
                         </template>
                     </template>
                 </template>
-                <template lwc:elseif={error}>
-                    <!--ERROR OCCURRED-->
-                    <c-crm-alert-banner type="Error" message={labels.NAV_CASE_RETRIEVE_ERROR}></c-crm-alert-banner>
-                </template>
-                <template lwc:else>
+                <template if:false={hasCases}>
                     <!--ERROR OCCURRED-->
                     <c-crm-alert-banner
-                        lwc:if={casesLoaded}
+                        if:true={casesLoaded}
                         type="Info"
                         message={labels.NO_CASES_ERROR}
                     ></c-crm-alert-banner>
                 </template>
-            </template>
-            <template lwc:else>
-                <lightning-spinner size="medium" alternative-text="Loading" variant="brand"></lightning-spinner>
+                <template if:true={error}>
+                    <!--ERROR OCCURRED-->
+                    <c-crm-alert-banner type="Error" message={labels.NAV_CASE_RETRIEVE_ERROR}></c-crm-alert-banner>
+                </template>
             </template>
         </template>
     </div>

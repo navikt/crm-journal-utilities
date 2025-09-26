@@ -17,6 +17,7 @@ export default class CRMThemeCategorization extends LightningElement {
     @api autoFocus = false;
     @api twoColumns = false;
     @api checkIfGjelderIsRequired = false;
+    @api useNewDesign = false;
 
     themeGroups = [];
     gjelderMap;
@@ -436,8 +437,12 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     get gjelderLabel() {
-        return this.requireGjelder
+        return this.useNewDesign && this.requireGjelder
             ? 'Gjelder (Må velges - er obligatorisk for valgt tema)'
             : 'Gjelder';
+    }
+
+    get showGjelderText() {
+        return !this.useNewDesign && this.requireGjelder;
     }
 }

@@ -1,22 +1,15 @@
-.custom-padding {
-    padding-left: 2rem;
-    overflow-wrap: break-word;
+.case-tile-bg {
+    --sds-c-icon-color-foreground-default: white;
+}
+
+.selected * {
+    color: white;
+}
+
+.item-grey {
+    background-color: #f2f2f2;
 }
 
 [data-selected='true'] {
-    color: white;
-    background-color: #00459c;
-}
-
-.case-tile-bg {
-    cursor: pointer;
-}
-
-.case-tile-bg:not([data-selected='true']):hover {
-    background-color: var(--lwc-colorBorder, rgb(221, 219, 218));
-}
-
-.item-last {
-    border-bottom-right-radius: 0.2em;
-    border-bottom-left-radius: 0.2em;
+    background-color: var(--lwc-brandAccessible, rgba(1, 118, 211, 1)) !important;
 }
