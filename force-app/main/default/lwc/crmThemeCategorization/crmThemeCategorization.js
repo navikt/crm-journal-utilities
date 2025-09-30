@@ -72,8 +72,8 @@ export default class CRMThemeCategorization extends LightningElement {
                             : [];
                     for (let gjelder of validGjelder) {
                         if (
-                            gjelder.CRM_Subtheme__c === this.chosenSubtheme &&
-                            gjelder.CRM_Subtype__c === this.chosenSubtype
+                            (this.chosenSubtheme == null || gjelder.CRM_Subtheme__c === this.chosenSubtheme) &&
+                            (this.chosenSubtype == null || gjelder.CRM_Subtype__c === this.chosenSubtype)
                         ) {
                             this.chosenGjelder = gjelder.Id;
                             this.publishFieldChange('subThemeCode', gjelder.CRM_Subtheme_Code__c);
@@ -398,7 +398,10 @@ export default class CRMThemeCategorization extends LightningElement {
     }
 
     get requireGjelder() {
-        return (this.variant === 'JOURNAL' && this.gjelderList?.length !== 0) || (this.checkIfGjelderIsRequired && this.themeCode === 'AAP');
+        return (
+            (this.variant === 'JOURNAL' && this.gjelderList?.length !== 0) ||
+            (this.checkIfGjelderIsRequired && this.themeCode === 'AAP')
+        );
     }
 
     get gjelderPlaceholder() {
