@@ -17,7 +17,6 @@ export default class CRMThemeCategorization extends LightningElement {
     @api autoFocus = false;
     @api twoColumns = false;
     @api checkIfGjelderIsRequired = false;
-    @api useNewDesign = false; // deprecated
 
     themeGroups = [];
     gjelderMap;
