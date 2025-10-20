@@ -1,3 +1,5 @@
-.nav-red {
-    --sds-c-icon-color-background: #c30001;
+.slds-form-element__control {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
 }

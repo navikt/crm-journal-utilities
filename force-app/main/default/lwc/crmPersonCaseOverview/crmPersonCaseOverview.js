@@ -3,7 +3,6 @@ import getCases from '@salesforce/apex/CRM_NavSakService.getSafActorCases';
 import getCategorization from '@salesforce/apex/CRM_ThemeUtils.getCategorization';
 import crmSingleValueUpdate from '@salesforce/messageChannel/crmSingleValueUpdate__c';
 import noFilterTemplate from './crmPersonCaseOverview.html';
-import noFilterTemplateNewDesign from './crmPersonCaseOverviewNewDesign.html';
 import themeTemplate from './crmPersonCaseTheme.html';
 import { publish, MessageContext } from 'lightning/messageService';
 
@@ -30,7 +29,6 @@ export default class NksPersonCaseOverview extends LightningElement {
     @api FAGSAK_ONLY = false;
     @api paddingBottom;
     @api autoFocus = false;
-    @api useNewDesign = false;
 
     caseList = []; //Contains all Nav cases returned from the API
     displayedCaseGroups = []; //Holds the list of case groups to be displayed
@@ -52,20 +50,14 @@ export default class NksPersonCaseOverview extends LightningElement {
         if (this.personTemplate) {
             return themeTemplate;
         }
-        return this.useNewDesign ? noFilterTemplateNewDesign : noFilterTemplate;
+        return noFilterTemplate;
     }
 
     renderedCallback() {
         this.setSelectedNavCase(this.selectedCaseId);
         if (!this.rendered && this.autoFocus) {
-            if (this.useNewDesign) {
-                const customRadio = this.template.querySelector('input[type="radio"][name="caseType"]');
-                if (customRadio) customRadio.focus();
-            } else {
-                const radioGroup = this.template.querySelector('lightning-radio-group');
-                if (radioGroup) radioGroup.focus();
-            }
-
+            const customRadio = this.template.querySelector('input[type="radio"][name="caseType"]');
+            if (customRadio) customRadio.focus();
             this.rendered = true;
         }
     }
