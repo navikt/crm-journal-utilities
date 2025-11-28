@@ -20,8 +20,6 @@ global class CRM_JournalEntryWrapper {
     @AuraEnabled
     public CRM_Sak sak;
     @AuraEnabled
-    public String overstyrInnsynsregler; // VISES_MASKINELT_GODKJENT or VISES_MANUELT_GODKJENT - https://confluence.adeo.no/spaces/BOA/pages/313346837/opprettJournalpost
-    @AuraEnabled
     public List<CRM_Dokumenter> dokumenter;
     @AuraEnabled
     public List<CRM_Tilleggsopplysninger> tilleggsopplysninger;
